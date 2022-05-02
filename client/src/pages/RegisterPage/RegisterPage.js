@@ -11,8 +11,7 @@ import FullRegister from './FullRegister';
 // } from '@sproutsocial/racine';
 
 const initialState = {
-  quickRegister: true,
-  name:'luigi'
+  fullRegister: false,
 };
 
 const reducer = (state, action) => {
@@ -52,7 +51,7 @@ const RegisterPage = () => {
 
   return (
     <div className="immigrant-register-page">
-      {state.quickRegister ?
+      {!state.fullRegister ?
         <QuickRegister updateField={updateField} state={state} /> :
         <FullRegister updateField={updateField} />}
 

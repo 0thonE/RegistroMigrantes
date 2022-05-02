@@ -1,12 +1,10 @@
 import React/* , { useState, useEffect, useRef }  */ from "react";
 
 import {
-  Avatar,
   Box,
   Card,
   Image,
   Label,
-  Stack,
   Text,
 } from '@sproutsocial/racine';
 

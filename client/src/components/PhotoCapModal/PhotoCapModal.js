@@ -24,8 +24,8 @@ const PhotoCapModal = ({ setImg, open = false }) => {
   const [imageSrc, setImageSrc] = useState(defaultImage);
 
   useEffect(() => {
-    setOpenModal(open);
-  }, [open]);
+    setOpenModal(!openModal);
+  }, [open]);//react-hooks/exhaustive-deps
 
   useEffect(() => {
     setImg(imageSrc)

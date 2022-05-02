@@ -2,11 +2,10 @@ import React, { useState, } from 'react';
 
 import {
   Box,
-  Button,
+  // Button,
   FormField,
   Input,
   Image,
-  Options,
   Radio,
   Select,
 } from '@sproutsocial/racine';
@@ -39,8 +38,9 @@ const QuickRegister = ({ state, updateField }) => {
     <Box className="quick-register" display='flex' flexWrap='wrap' justifyContent='space-between' >
 
       <Box className="field-container" width={1 / 5} >
-        <FormField label='Lugar atencion'>
-          {props => itemsAtentionPlace.map(value => <Radio
+        <FormField key='attention-key'  label='Lugar atencion'>
+          {props => itemsAtentionPlace.map((value, index) => <Radio
+            key={`radio-${index}`}
             className='margin-rigth-1'
             name="lugar-atencion"
             value={value}
@@ -61,7 +61,7 @@ const QuickRegister = ({ state, updateField }) => {
     <Box className="quick-register" display='flex' flexWrap='wrap' >
 
       <Box className="field-container" width={1 / 5} >
-        <FormField label='Nombre'>
+        <FormField key='name-key'  label='Nombre'>
           {props => <Input
             placeholder='Nombre o Nombres'
             value={state.name}
@@ -71,7 +71,7 @@ const QuickRegister = ({ state, updateField }) => {
       </Box>
 
       <Box className="field-container" width={1 / 5} >
-        <FormField label='Apellido Paterno'>
+        <FormField key='lastname1-key'  label='Apellido Paterno'>
           {props => <Input
             placeholder='Apellido Paterno'
             value={state.fatherSurname}
@@ -81,7 +81,7 @@ const QuickRegister = ({ state, updateField }) => {
       </Box>
 
       <Box className="field-container" width={1 / 5} >
-        <FormField label='Apellido Materno'>
+        <FormField key='lastname2-key'  label='Apellido Materno'>
           {props => <Input
             placeholder='Apellido Materno'
             value={state.motherSurname}
@@ -91,7 +91,7 @@ const QuickRegister = ({ state, updateField }) => {
       </Box>
 
       <Box className="field-container" width={1 / 5} >
-        <FormField label='Nombre no oficial'>
+        <FormField key='nickname-key'  label='Nombre no oficial'>
           {props => <Input
             placeholder='Como le gusta que le digan'
             value={state.unofficialName}
@@ -106,17 +106,18 @@ const QuickRegister = ({ state, updateField }) => {
       </Box>
 
       <Box className="field-container" width={1 / 5} >
-        <FormField label='Fecha de Nacimiento'>
+        <FormField key='date-key'  label='Fecha de Nacimiento'>
           {props => <Input
-            placeholder='dd/mm/yy'
-            value={state.birthDate}
-            onChange={({ target }) => updateField('birthDate', target.value)}
+            type='date'
+            placeholder='dd/mm/yyyy'
+            value={state.birthDate?.value}
+            onChange={({ target }) => updateField('birthDate', { value: target.value, valueAsNumber: target.valueAsNumber })}
             {...props} />}
         </FormField>
       </Box>
 
       <Box className="field-container" width={1 / 5} >
-        <FormField label='País de Origen'>
+        <FormField key='origin-country-key'  label='País de Origen'>
           {props => <Input
             placeholder='País de origen o nacimiento'
             value={state.originCountry}
@@ -126,7 +127,7 @@ const QuickRegister = ({ state, updateField }) => {
       </Box>
 
       <Box className="field-container" width={1 / 5} >
-        <FormField label='Estado/Departamento'>
+        <FormField key='origin-state-key'  label='Estado/Departamento'>
           {props => <Input
             placeholder='Estado/departamento'
             value={state.originState}
@@ -136,7 +137,7 @@ const QuickRegister = ({ state, updateField }) => {
       </Box>
 
       <Box className="field-container" width={1 / 5} >
-        <FormField label='Municipio/Localidad'>
+        <FormField key='origin-state-key'  label='Municipio/Localidad'>
           {props => <Input
             placeholder='Municipio/Localidad'
             value={state.originCity}
@@ -146,7 +147,7 @@ const QuickRegister = ({ state, updateField }) => {
       </Box>
 
       <Box className="field-container" width={1 / 5} >
-        <FormField label='Género'>
+        <FormField key='gender-key'  label='Género'>
           {props => <Select
             id='gender'
             value={state.gender}
@@ -162,8 +163,9 @@ const QuickRegister = ({ state, updateField }) => {
       </Box>
 
       <Box className="field-container" width={1 / 5} >
-        <FormField label='Persona Cis o Trans'>
-          {props => itemsCisTrans.map(value => <Radio
+        <FormField key='cis-trans-key'  label='Persona Cis o Trans'>
+          {props => itemsCisTrans.map((value, index) => <Radio
+            key={`radio-${index}`}
             className='margin-rigth-1'
             name="cis-trans"
             value={value}
@@ -175,7 +177,7 @@ const QuickRegister = ({ state, updateField }) => {
       </Box>
 
       <Box className="field-container" width={1 / 5} >
-        <FormField label='Orientación sexual'>
+        <FormField key='sexual-preference-key'  label='Orientación sexual'>
           {props => <Select
             id='sexual-preference'
             value={state.sexualPreference}
@@ -191,8 +193,9 @@ const QuickRegister = ({ state, updateField }) => {
       </Box>
 
       <Box className="field-container" width={1 / 5} >
-        <FormField label='Presenta discapacidad'>
-          {props => itemsYesNo.map(value => <Radio
+        <FormField key='-key'  label='Presenta discapacidad'>
+          {props => itemsYesNo.map((value, index) => <Radio
+            key={`radio-${index}`}
             className='margin-rigth-1'
             name="has-disability"
             value={value}
@@ -205,7 +208,7 @@ const QuickRegister = ({ state, updateField }) => {
 
       {(state.hasDisability && state.hasDisability.toLowerCase() === 'si') ?
         <Box className="field-container" width={1 / 5} >
-          <FormField label='Especificar discapacidad'>
+          <FormField key='-key'  label='Especificar discapacidad'>
             {props => <Select
               id='disability'
               value={state.disability}
@@ -222,7 +225,7 @@ const QuickRegister = ({ state, updateField }) => {
       }
 
       <Box className="field-container" width={1 / 5} >
-        <FormField label='Cuenta con señas'>
+        <FormField key='-key'  label='Cuenta con señas'>
           {props => <Input
             placeholder='Presenta un razgo particular?'
             value={state.particularCharacteristics}
@@ -232,8 +235,9 @@ const QuickRegister = ({ state, updateField }) => {
       </Box>
 
       <Box className="field-container" width={1 / 5} >
-        <FormField label='Cuenta con teléfono'>
-          {props => itemsYesNo.map(value => <Radio
+        <FormField key='-key'  label='Cuenta con teléfono'>
+          {props => itemsYesNo.map((value, index) => <Radio
+            key={`radio-${index}`}
             className='margin-rigth-1'
             name="has-phoneNumber"
             value={value}
@@ -246,7 +250,7 @@ const QuickRegister = ({ state, updateField }) => {
 
       {(state.hasPhoneNumber && state.hasPhoneNumber.toLowerCase() === 'si') ?
         <Box className="field-container" width={1 / 5} >
-          <FormField label='Número teléfono'>
+          <FormField key='-key'  label='Número teléfono'>
             {props => <Input
               placeholder='Número télefono'
               value={state.phoneNumber}
@@ -257,8 +261,9 @@ const QuickRegister = ({ state, updateField }) => {
       }
 
       <Box className="field-container" width={1 / 5} >
-        <FormField label='Cuenta con documento ID'>
-          {props => itemsYesNo.map(value => <Radio
+        <FormField key='-key'  label='Cuenta con documento ID'>
+          {props => itemsYesNo.map((value, index) => <Radio
+            key={`radio-${index}`}
             className='margin-rigth-1'
             name="has-id"
             value={value}
@@ -271,7 +276,7 @@ const QuickRegister = ({ state, updateField }) => {
 
       {(state.hasID && state.hasID.toLowerCase() === 'si') ?
         <Box className="field-container" width={1 / 5} >
-          <FormField label='Tipo de documento'>
+          <FormField key='-key'  label='Tipo de documento'>
             {props => <Select
               id='id-type'
               value={state.IdType}
@@ -289,7 +294,7 @@ const QuickRegister = ({ state, updateField }) => {
 
       {(state.hasID && state.hasID.toLowerCase() === 'si') ?
         <Box className="field-container" width={1 / 5} >
-          <FormField label='País emisor'>
+          <FormField key='-key'  label='País emisor'>
             {props => <Input
               placeholder='País que emitió el documento'
               value={state.idCountryEmisor}
@@ -301,7 +306,7 @@ const QuickRegister = ({ state, updateField }) => {
 
       {/* {(state.hasID && state.hasID.toLowerCase() === 'si') ?
         <Box className="field-container" width={1 / 5} >
-          <FormField label='Documentos'>
+          <FormField key='-key'  label='Documentos'>
             {props => <Input
               placeholder='País que emitió el documento'
               value={state.idCountryEmisor}
@@ -312,8 +317,9 @@ const QuickRegister = ({ state, updateField }) => {
       } */}
 
       <Box className="field-container" width={1 / 5} >
-        <FormField label='Protección internacional'>
-          {props => itemsYesNo.map(value => <Radio
+        <FormField key='-key'  label='Protección internacional'>
+          {props => itemsYesNo.map((value, index) => <Radio
+            key={`radio-${index}`}
             className='margin-rigth-1'
             name="international-protection"
             value={value}
@@ -325,8 +331,9 @@ const QuickRegister = ({ state, updateField }) => {
       </Box>
 
       <Box className="field-container" width={1 / 5} >
-        <FormField label='Proceso ante COMAR'>
-          {props => itemsYesNo.map(value => <Radio
+        <FormField key='-key'  label='Proceso ante COMAR'>
+          {props => itemsYesNo.map((value, index) => <Radio
+            key={`radio-${index}`}
             className='margin-rigth-1'
             name="comar-process"
             value={value}
@@ -338,8 +345,9 @@ const QuickRegister = ({ state, updateField }) => {
       </Box>
 
       <Box className="field-container" width={1 / 5} >
-        <FormField label='Regularización migratoria'>
-          {props => itemsYesNo.map(value => <Radio
+        <FormField key='-key'  label='Regularización migratoria'>
+          {props => itemsYesNo.map((value, index) => <Radio
+            key={`radio-${index}`}
             className='margin-rigth-1'
             name="migratory-regulation"
             value={value}
@@ -351,7 +359,7 @@ const QuickRegister = ({ state, updateField }) => {
       </Box>
 
       <Box className="field-container" width={1 / 5} >
-        <FormField label='Proceso ante INM'>
+        <FormField key='-key'  label='Proceso ante INM'>
           {props => <Select
             id='inm-process'
             value={state.inmProcess}
@@ -377,7 +385,7 @@ const QuickRegister = ({ state, updateField }) => {
     <Box className="quick-register" display='flex' flexWrap='wrap' >
 
       <Box className="field-container" width={1 / 5} >
-        <FormField label='Nombre'>
+        <FormField key='-key'  label='Nombre'>
           {props => <Input
             placeholder='Nombre o Nombres'
             value={state.name}
@@ -386,7 +394,7 @@ const QuickRegister = ({ state, updateField }) => {
         </FormField>
       </Box>
 
-      
+
 
 
 
