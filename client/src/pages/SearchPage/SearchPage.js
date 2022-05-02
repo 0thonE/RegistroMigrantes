@@ -104,11 +104,11 @@ const SearchPage = () => {
         </Box>
         <Box className='search-button' width={1 / 3} >
           <Button className='full-button' appearance='primary'
-            onClick={() => navigate(`/registro`)}>Crear nuevo registro</Button>
+            onClick={() => navigate(`/registr`)}>Crear nuevo registro</Button>
         </Box>
       </Box>
       <br /><br />
-      <DataCard />
+      {/* <DataCard /> */}
 
     </div>
   )
