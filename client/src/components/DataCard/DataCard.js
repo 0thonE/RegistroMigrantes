@@ -36,7 +36,7 @@ const dateToText = (date) => {
 }
 
 const DataCard = ({ name = 'Nombre Apellido Apellido', birthDate = '00/00/0000', originCountry = 'País de origen',
-  src_img = defaultImage, shelterEvent = shelters }) => {
+  src_img = defaultImage, shelterEvent = shelters, ...props}) => {
 
 
   return (
@@ -47,6 +47,7 @@ const DataCard = ({ name = 'Nombre Apellido Apellido', birthDate = '00/00/0000',
       display="flex"
       alignItems="center"
       justifyContent="space-between"
+      {...props}
     // py={350}
     // px={450}
     >

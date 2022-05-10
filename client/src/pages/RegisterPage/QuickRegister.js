@@ -551,7 +551,7 @@ const QuickRegister = ({ state, updateField }) => {
 
     </Box >
 
-    <br /><br />
+    {/* <br /><br />
     <h3>Datos Sociodemográficos</h3>
     <br />
     <Box className="quick-register" display='flex' flexWrap='wrap' >
@@ -598,7 +598,7 @@ const QuickRegister = ({ state, updateField }) => {
           </FormField>
         </Box> : null}
 
-    </Box >
+    </Box > */}
 
 
     <Box className="quick-register" display='flex' flexWrap='wrap' flexDirection='row-reverse'>

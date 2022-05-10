@@ -137,7 +137,7 @@ const SearchPage = () => {
         </Box>
       </Box>
       <br /><br />
-      <DataCard />
+      <DataCard key={12} />
 
     </div>
   )
