@@ -11,6 +11,7 @@ import { NavBar } from "./components";
 //Pages
 import SearchPage from "./pages/SearchPage";
 import RegisterPage from "./pages/RegisterPage";
+import LoginPage from "./pages/LoginPage";
 
 
 const App = props => (
@@ -22,6 +23,7 @@ const App = props => (
         <Routes>
           <Route path="/" element={<SearchPage />} />
           <Route path="/registro" element={<RegisterPage />} />
+          <Route path="/login" element={<LoginPage />} />º
         </Routes>
       </div>
     </div>

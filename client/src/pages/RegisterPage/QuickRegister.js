@@ -1,44 +1,89 @@
-import React, { useState, } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+
+import firebaseApp from "../../firebase/conection";
+
+import { getFirestore, doc, collection, setDoc } from "firebase/firestore";
 
 import {
   Box,
-  // Button,
+  Button,
   FormField,
   Input,
   Image,
+  Listbox,
+  ListboxButton,
   Radio,
   Select,
 } from '@sproutsocial/racine';
+import { PhotoCapModal, /* FileAttach */ } from '../../components'
 
-import { PhotoCapModal } from '../../components'
+import { useNavigate } from "react-router-dom";
+import { SelectableCountries } from "../../utilities/SelectableCountries";
 
 import defaultImage from '../../assets/picturePlaceHolder.png';
 
 const itemsYesNo = ['Si', 'No'];
 const itemsAtentionPlace = ['Dentro albergue', 'En puerta'];
+const itemsCountries = SelectableCountries();
+const itemsCivilStatus = [{ value: '', text: 'Selecciona un estado...' }, 'Soltero', 'Casado', 'Divorciado', 'Viudo', 'Union Libre', 'Otro'];
 const itemsGender = [{ value: '', text: 'Selecciona un género...' }, 'Hombre', 'Mujer', 'No binarix'];
 const itemsCisTrans = ['Cis', 'Trans'];
-const itemsSexualPreference = [{ value: '', text: 'Selecciona una preferencia...' }, 'Gay', 'Lesbiana', 'Bisexual', 'Transgenero', 'Transexual', 'Travesti', 'Intersexual', 'Queer', 'Heterosexual'];
+const itemsSexualPreference = [{ value: '', text: 'Selecciona una preferencia...' }, 'Asexual', 'Bisexual', 'Demisexual', 'Heterosexual', 'Homosexual', 'Pansexual'];
 const itemsDisability = [{ value: '', text: 'Selecciona una discapacidad...' }, 'Mental', 'Motriz', 'Física', 'Intelectual'];
 const itemsIdType = [{ value: '', text: 'Selecciona un documento...' }, 'Documento/Cédula de Identidad', 'Acta/Partida de Nacimiento', 'Pasaporte', 'Constancia de Nacionalidad', 'Licencia de Manejo', 'INE', 'Matrícula consular'];
+const itemsInternationalProtection = [{ value: '', text: 'Selecciona un proceso...' }, 'No ha solicitado refugio', 'Es solicitante de refugio en Jalisco con acuse de recibo del trámite', 'Es solicitante de refugio en Jalisco con constancia de trámite', 'Abandonó el caso de refugio en otro estado', 'Tiene cosntancia de reconocimiento como sujeto de Protección Complementaria', 'Tiene constancia de reconocimiento como Refugiado', 'Realizó el trámite de refugio y la resolución de COMAR fue negativa (le negaron el refugio)', 'Es una persona apátrida',];
 const itemsInmProcess = [{ value: '', text: 'Selecciona un proceso...' }, 'Tarjeta de Visitante por Razones Humanitarias (TVRH)', 'Tarjeta de Residente Temporal (TRT)', 'Tarjeta de Residente Permanente (TRP)'];
+const itemsLegalCompanion = [{ value: '', text: 'Selecciona un proceso...' }, 'Papá', 'Mamá', 'Ambxs', 'Tutor legal'];
 //socio demographic
-const itemsIsCity = [{ value: '', text: 'Selecciona tipo de comunidad...' }, 'Ciudad', 'Pueblo', 'Aldea'];
+const itemsZoneType = [{ value: '', text: 'Selecciona tipo de comunidad...' }, 'Ciudad', 'Pueblo', 'Aldea'];
+const itemsReligions = [{ value: '', text: 'Selecciona tipo de comunidad...' }, 'Cátolica', 'Evangélica', 'Cristiana', 'Testigo de Jehová', 'Mormona', 'Anglicana', 'Protestante', 'Prebiteriana', 'Ateo', 'Otro'];
 
 
 const QuickRegister = ({ state, updateField }) => {
-  const [toogleModal, setToogleModal] = useState(0);
-  const [imageSrc, setImageSrc] = useState(defaultImage);
 
+  const firestore = getFirestore(firebaseApp);
+  const [toogleUserImgModal, setToogleUserImgModal] = useState(0);
+  const [toogleComarImgModal, setToogleComarImgModal] = useState(0);
+  const [UserImgSrc, setUserImgSrc] = useState(defaultImage);
+  const [isUnderAge, setIsUnderAge] = useState(false);
+
+  const navigate = useNavigate();
+
+  const idDocumentRef = useRef(null);
+  const comarDocumentRef = useRef(null);
+  const inmDocumentRef = useRef(null);
+
+  useEffect(() => {
+    if (!state.birthDate) return;
+    if (checkAge(state.birthDate?.value))
+      return setIsUnderAge(false);
+    setIsUnderAge(true);
+  }, [state.birthDate]);
 
   const isChecked = (value, field) => value === state[field];
+
+  const checkAge = (dateString, legallAge = 18) => {
+    let today = new Date();
+    let birthDate = new Date(dateString);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    let m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return legallAge <= age;
+  }
+
+  const registerImmigrant = () => {
+    const docuRef = doc(firestore, `immigrants/${Date.now()}`);
+    setDoc(docuRef, { ...state });
+  }
 
   return (<>
     <br /><br />
     <Box className="quick-register" display='flex' flexWrap='wrap' justifyContent='space-between' >
 
       <Box className="field-container" width={1 / 5} >
-        <FormField key='attention-key'  label='Lugar atencion'>
+        <FormField label='Lugar atencion'>
           {props => itemsAtentionPlace.map((value, index) => <Radio
             key={`radio-${index}`}
             className='margin-rigth-1'
@@ -51,17 +96,16 @@ const QuickRegister = ({ state, updateField }) => {
         </FormField>
       </Box>
       <Box width={1 / 5} >
-        <Image className='add-img' alt='Agrega Foto' src={imageSrc} defaultImage={defaultImage}
-          onClick={() => setToogleModal(toogleModal + 1)} />
+        <Image className='add-img' alt='Agrega Foto' src={UserImgSrc} defaultImage={defaultImage}
+          onClick={() => setToogleUserImgModal(toogleUserImgModal + 1)} />
       </Box>
     </Box>
     <br /><br />
     <h3>Datos Personales</h3>
     <br />
     <Box className="quick-register" display='flex' flexWrap='wrap' >
-
       <Box className="field-container" width={1 / 5} >
-        <FormField key='name-key'  label='Nombre'>
+        <FormField label='Nombre'>
           {props => <Input
             placeholder='Nombre o Nombres'
             value={state.name}
@@ -71,7 +115,7 @@ const QuickRegister = ({ state, updateField }) => {
       </Box>
 
       <Box className="field-container" width={1 / 5} >
-        <FormField key='lastname1-key'  label='Apellido Paterno'>
+        <FormField label='Apellido Paterno'>
           {props => <Input
             placeholder='Apellido Paterno'
             value={state.fatherSurname}
@@ -81,7 +125,7 @@ const QuickRegister = ({ state, updateField }) => {
       </Box>
 
       <Box className="field-container" width={1 / 5} >
-        <FormField key='lastname2-key'  label='Apellido Materno'>
+        <FormField label='Apellido Materno'>
           {props => <Input
             placeholder='Apellido Materno'
             value={state.motherSurname}
@@ -91,7 +135,7 @@ const QuickRegister = ({ state, updateField }) => {
       </Box>
 
       <Box className="field-container" width={1 / 5} >
-        <FormField key='nickname-key'  label='Nombre no oficial'>
+        <FormField label='Nombre no oficial'>
           {props => <Input
             placeholder='Como le gusta que le digan'
             value={state.unofficialName}
@@ -106,7 +150,7 @@ const QuickRegister = ({ state, updateField }) => {
       </Box>
 
       <Box className="field-container" width={1 / 5} >
-        <FormField key='date-key'  label='Fecha de Nacimiento'>
+        <FormField label='Fecha de Nacimiento'>
           {props => <Input
             type='date'
             placeholder='dd/mm/yyyy'
@@ -117,17 +161,33 @@ const QuickRegister = ({ state, updateField }) => {
       </Box>
 
       <Box className="field-container" width={1 / 5} >
-        <FormField key='origin-country-key'  label='País de Origen'>
-          {props => <Input
-            placeholder='País de origen o nacimiento'
-            value={state.originCountry}
-            onChange={({ target }) => updateField('originCountry', target.value)}
-            {...props} />}
+        <FormField label='País de Origen'>
+          {props => <ListboxButton
+            width="100%"
+            aria-label="país de origen"
+            content={
+              <Listbox value={state.originCountry} width="100%"
+                onChange={(selection) => updateField('originCountry', selection)} >
+                <Listbox.Group>
+                  <Listbox.FilterInput placeholder="Buscar" mb={300} />
+                  <div className='scrollable-listbox'>
+                    {itemsCountries.map((country, i) => {
+                      if (typeof country === 'string')
+                        return <Listbox.Item key={`${country}-index`} value={country}>{country}</Listbox.Item>
+                      return <Listbox.Item key={`${country.value}-index`} value={country.value}>{country.text}</Listbox.Item>
+                    })}
+                  </div>
+                </Listbox.Group>
+              </Listbox>
+            }
+          >
+            {state.originCountry || "Selecciona un país"}
+          </ListboxButton>}
         </FormField>
       </Box>
 
       <Box className="field-container" width={1 / 5} >
-        <FormField key='origin-state-key'  label='Estado/Departamento'>
+        <FormField label='Estado/Departamento'>
           {props => <Input
             placeholder='Estado/departamento'
             value={state.originState}
@@ -137,7 +197,7 @@ const QuickRegister = ({ state, updateField }) => {
       </Box>
 
       <Box className="field-container" width={1 / 5} >
-        <FormField key='origin-state-key'  label='Municipio/Localidad'>
+        <FormField label='Municipio/Localidad'>
           {props => <Input
             placeholder='Municipio/Localidad'
             value={state.originCity}
@@ -147,7 +207,23 @@ const QuickRegister = ({ state, updateField }) => {
       </Box>
 
       <Box className="field-container" width={1 / 5} >
-        <FormField key='gender-key'  label='Género'>
+        <FormField label='Estado Civil'>
+          {props => <Select
+            id='civilStatus'
+            value={state.civilStatus}
+            onChange={({ target }) => updateField('civilStatus', target.value)}
+            {...props} >
+            {itemsCivilStatus.map(gender => {
+              if (typeof gender === 'string')
+                return <option key={`${gender}-index`} value={gender}>{gender}</option>
+              return <option key={`${gender.value}-index`} value={gender.value}>{gender.text}</option>
+            })}
+          </Select>}
+        </FormField>
+      </Box>
+
+      <Box className="field-container" width={1 / 5} >
+        <FormField label='Género'>
           {props => <Select
             id='gender'
             value={state.gender}
@@ -155,15 +231,15 @@ const QuickRegister = ({ state, updateField }) => {
             {...props} >
             {itemsGender.map(gender => {
               if (typeof gender === 'string')
-                return <option value={gender}>{gender}</option>
-              return <option value={gender.value}>{gender.text}</option>
+                return <option key={`${gender}-index`} value={gender}>{gender}</option>
+              return <option key={`${gender.value}-index`} value={gender.value}>{gender.text}</option>
             })}
           </Select>}
         </FormField>
       </Box>
 
       <Box className="field-container" width={1 / 5} >
-        <FormField key='cis-trans-key'  label='Persona Cis o Trans'>
+        <FormField label='Persona Cis o Trans'>
           {props => itemsCisTrans.map((value, index) => <Radio
             key={`radio-${index}`}
             className='margin-rigth-1'
@@ -177,7 +253,7 @@ const QuickRegister = ({ state, updateField }) => {
       </Box>
 
       <Box className="field-container" width={1 / 5} >
-        <FormField key='sexual-preference-key'  label='Orientación sexual'>
+        <FormField label='Orientación sexual'>
           {props => <Select
             id='sexual-preference'
             value={state.sexualPreference}
@@ -185,15 +261,15 @@ const QuickRegister = ({ state, updateField }) => {
             {...props} >
             {itemsSexualPreference.map(preference => {
               if (typeof preference === 'string')
-                return <option value={preference}>{preference}</option>
-              return <option value={preference.value}>{preference.text}</option>
+                return <option key={`${preference}-index`} value={preference}>{preference}</option>
+              return <option key={`${preference.value}-index`} value={preference.value}>{preference.text}</option>
             })}
           </Select>}
         </FormField>
       </Box>
 
       <Box className="field-container" width={1 / 5} >
-        <FormField key='-key'  label='Presenta discapacidad'>
+        <FormField label='Presenta discapacidad'>
           {props => itemsYesNo.map((value, index) => <Radio
             key={`radio-${index}`}
             className='margin-rigth-1'
@@ -208,7 +284,7 @@ const QuickRegister = ({ state, updateField }) => {
 
       {(state.hasDisability && state.hasDisability.toLowerCase() === 'si') ?
         <Box className="field-container" width={1 / 5} >
-          <FormField key='-key'  label='Especificar discapacidad'>
+          <FormField label='Especificar discapacidad'>
             {props => <Select
               id='disability'
               value={state.disability}
@@ -216,8 +292,8 @@ const QuickRegister = ({ state, updateField }) => {
               {...props} >
               {itemsDisability.map(disability => {
                 if (typeof disability === 'string')
-                  return <option value={disability}>{disability}</option>
-                return <option value={disability.value}>{disability.text}</option>
+                  return <option key={`${disability}-index`} value={disability}>{disability}</option>
+                return <option key={`${disability.value}-index`} value={disability.value}>{disability.text}</option>
               })}
             </Select>}
           </FormField>
@@ -225,9 +301,9 @@ const QuickRegister = ({ state, updateField }) => {
       }
 
       <Box className="field-container" width={1 / 5} >
-        <FormField key='-key'  label='Cuenta con señas'>
+        <FormField label='Cuenta con señas'>
           {props => <Input
-            placeholder='Presenta un razgo particular?'
+            placeholder='¿Presenta un razgo particular?'
             value={state.particularCharacteristics}
             onChange={({ target }) => updateField('particularCharacteristics', target.value)}
             {...props} />}
@@ -235,7 +311,7 @@ const QuickRegister = ({ state, updateField }) => {
       </Box>
 
       <Box className="field-container" width={1 / 5} >
-        <FormField key='-key'  label='Cuenta con teléfono'>
+        <FormField label='Cuenta con teléfono'>
           {props => itemsYesNo.map((value, index) => <Radio
             key={`radio-${index}`}
             className='margin-rigth-1'
@@ -250,7 +326,7 @@ const QuickRegister = ({ state, updateField }) => {
 
       {(state.hasPhoneNumber && state.hasPhoneNumber.toLowerCase() === 'si') ?
         <Box className="field-container" width={1 / 5} >
-          <FormField key='-key'  label='Número teléfono'>
+          <FormField label='Número teléfono'>
             {props => <Input
               placeholder='Número télefono'
               value={state.phoneNumber}
@@ -261,7 +337,7 @@ const QuickRegister = ({ state, updateField }) => {
       }
 
       <Box className="field-container" width={1 / 5} >
-        <FormField key='-key'  label='Cuenta con documento ID'>
+        <FormField label='Cuenta con documento ID'>
           {props => itemsYesNo.map((value, index) => <Radio
             key={`radio-${index}`}
             className='margin-rigth-1'
@@ -276,48 +352,57 @@ const QuickRegister = ({ state, updateField }) => {
 
       {(state.hasID && state.hasID.toLowerCase() === 'si') ?
         <Box className="field-container" width={1 / 5} >
-          <FormField key='-key'  label='Tipo de documento'>
-            {props => <Select
-              id='id-type'
-              value={state.IdType}
-              onChange={({ target }) => updateField('IdType', target.value)}
-              {...props} >
-              {itemsIdType.map(id => {
-                if (typeof id === 'string')
-                  return <option value={id}>{id}</option>
-                return <option value={id.value}>{id.text}</option>
-              })}
-            </Select>}
+          <FormField label='País emisor de ID'>
+            {props => <ListboxButton
+              width="100%"
+              aria-label="país emisor de id"
+              content={
+                <Listbox value={state.idCountryEmisor} width="100%"
+                  onChange={(selection) => updateField('idCountryEmisor', selection)} >
+                  <Listbox.Group>
+                    <Listbox.FilterInput placeholder="Buscar" mb={300} />
+                    <div className='scrollable-listbox'>
+                      {itemsCountries.map((country, i) => {
+                        if (typeof country === 'string')
+                          return <Listbox.Item key={`${country}-index`} value={country}>{country}</Listbox.Item>
+                        return <Listbox.Item key={`${country.value}-index`} value={country.value}>{country.text}</Listbox.Item>
+                      })}
+                    </div>
+                  </Listbox.Group>
+                </Listbox>
+              }
+            >
+              {state.idCountryEmisor || "Selecciona un país"}
+            </ListboxButton>}
           </FormField>
         </Box> : null
       }
 
       {(state.hasID && state.hasID.toLowerCase() === 'si') ?
         <Box className="field-container" width={1 / 5} >
-          <FormField key='-key'  label='País emisor'>
-            {props => <Input
-              placeholder='País que emitió el documento'
-              value={state.idCountryEmisor}
-              onChange={({ target }) => updateField('idCountryEmisor', target.value)}
-              {...props} />}
+          <FormField label='Tipo de documento'>
+            {props => <>
+              <Select
+                id='id-type'
+                value={state.IdType}
+                onChange={({ target }) => {
+                  updateField('IdType', target.value);
+                  idDocumentRef.current.click();
+                }}
+                {...props} >
+                {itemsIdType.map(id => {
+                  if (typeof id === 'string')
+                    return <option key={`${id}-index`} value={id}>{id}</option>
+                  return <option key={`${id.value}-index`} value={id.value}>{id.text}</option>
+                })}
+              </Select>
+              <input ref={idDocumentRef} type='file' multiple onChange={({ target }) => updateField('idDocument', target.value)} />
+            </>}
           </FormField>
-        </Box> : null
-      }
-
-      {/* {(state.hasID && state.hasID.toLowerCase() === 'si') ?
-        <Box className="field-container" width={1 / 5} >
-          <FormField key='-key'  label='Documentos'>
-            {props => <Input
-              placeholder='País que emitió el documento'
-              value={state.idCountryEmisor}
-              onChange={({ target }) => updateField('idCountryEmisor', target.value)}
-              {...props} />}
-          </FormField>
-        </Box> : null
-      } */}
+        </Box> : null}
 
       <Box className="field-container" width={1 / 5} >
-        <FormField key='-key'  label='Protección internacional'>
+        <FormField label='Protección internacional'>
           {props => itemsYesNo.map((value, index) => <Radio
             key={`radio-${index}`}
             className='margin-rigth-1'
@@ -330,22 +415,40 @@ const QuickRegister = ({ state, updateField }) => {
         </FormField>
       </Box>
 
-      <Box className="field-container" width={1 / 5} >
-        <FormField key='-key'  label='Proceso ante COMAR'>
-          {props => itemsYesNo.map((value, index) => <Radio
-            key={`radio-${index}`}
-            className='margin-rigth-1'
-            name="comar-process"
-            value={value}
-            label={value}
-            checked={isChecked(value, 'comarProcess')}
-            onChange={({ target }) => updateField('comarProcess', target.value)}
-            {...props} />)}
-        </FormField>
-      </Box>
+      {(state.internationalProtection && state.internationalProtection.toLowerCase() === 'si') ?
+        <Box className="field-container" width={1 / 5} >
+          <FormField label='Proceso ante COMAR'>
+            {props => <Select
+              id='id-type'
+              value={state.comarProcess}
+              onChange={({ target }) => {
+                updateField('comarProcess', target.value);
+                idDocumentRef.current.click();
+              }}
+              {...props} >
+              {itemsInternationalProtection.map(process => {
+                if (typeof process === 'string')
+                  return <option key={`${process}-index`} value={process}>{process}</option>
+                return <option key={`${process.value}-index`} value={process.value}>{process.text}</option>
+              })}
+            </Select>}
+          </FormField>
+        </Box> : null}
+
+      {(state.internationalProtection && state.internationalProtection.toLowerCase() === 'si') ?
+        <Box className="field-container" width={1 / 5} >
+          <FormField label='Archivo del proceso COMAR'>
+            {props => <>
+              <Button appearance="placeholder" marginRight='1rem' onClick={() => comarDocumentRef.current.click()}>Archivo</Button>
+              <Button appearance="primary" onClick={() => setToogleComarImgModal(toogleComarImgModal + 1)}>Tomar Foto</Button>
+              <input ref={comarDocumentRef} type='file' multiple onChange={({ target }) => updateField('comarDocument', target.value)} />
+              <PhotoCapModal id='comar-photo' setImg={(photo) => updateField('comarDocument', photo)} open={toogleComarImgModal} />
+            </>}
+          </FormField>
+        </Box> : null}
 
       <Box className="field-container" width={1 / 5} >
-        <FormField key='-key'  label='Regularización migratoria'>
+        <FormField label='Regularización migratoria'>
           {props => itemsYesNo.map((value, index) => <Radio
             key={`radio-${index}`}
             className='margin-rigth-1'
@@ -353,26 +456,95 @@ const QuickRegister = ({ state, updateField }) => {
             value={value}
             label={value}
             checked={isChecked(value, 'migratoryRegulation')}
-            onChange={({ target }) => updateField('internationalProtection', target.value)}
+            onChange={({ target }) => updateField('migratoryRegulation', target.value)}
             {...props} />)}
         </FormField>
       </Box>
 
+      {(state.migratoryRegulation && state.migratoryRegulation.toLowerCase() === 'si') ?
+        <Box className="field-container" width={1 / 5} >
+          <FormField label='Proceso ante INM'>
+            {props => <><Select
+              id='inm-process'
+              value={state.inmProcess}
+              onChange={({ target }) => {
+                updateField('inmProcess', target.value);
+                inmDocumentRef.current.click();
+              }}
+              {...props} >
+              {itemsInmProcess.map(process => {
+                if (typeof process === 'string')
+                  return <option key={`${process}-index`} value={process}>{process}</option>
+                return <option key={`${process.value}-index`} value={process.value}>{process.text}</option>
+              })}
+            </Select>
+              <input ref={inmDocumentRef} type='file' multiple onChange={({ target }) => updateField('inmDocument', target.value)} />
+            </>}
+          </FormField>
+        </Box> : null}
+
+      {(isUnderAge) ? <>
+        <Box className="field-container" width={1 / 5} >
+          <FormField label='¿Menor Legalmente Acompañado?'>
+            {props => itemsYesNo.map((value, index) => <Radio
+              key={`radio-${index}`}
+              className='margin-rigth-1'
+              name="legally-accompanied"
+              value={value}
+              label={value}
+              checked={isChecked(value, 'legallyAccompanied')}
+              onChange={({ target }) => updateField('legallyAccompanied', target.value)}
+              {...props} />)}
+          </FormField>
+        </Box>
+
+        {(state.legallyAccompanied && state.legallyAccompanied.toLowerCase() === 'si') ?
+          <Box className="field-container" width={1 / 5} >
+            <FormField label='Acompañante Legal '>
+              {props => <Select
+                value={state.legalCompanion}
+                onChange={({ target }) => {
+                  updateField('legalCompanion', target.value);
+                }}
+                {...props} >
+                {itemsLegalCompanion.map(companion => {
+                  if (typeof companion === 'string')
+                    return <option key={`${companion}-index`} value={companion}>{companion}</option>
+                  return <option key={`${companion.value}-index`} value={companion.value}>{companion.text}</option>
+                })}
+              </Select>}
+            </FormField>
+          </Box> : null}
+
+      </> : null}
+
       <Box className="field-container" width={1 / 5} >
-        <FormField key='-key'  label='Proceso ante INM'>
-          {props => <Select
-            id='inm-process'
-            value={state.inmProcess}
-            onChange={({ target }) => updateField('inmProcess', target.value)}
-            {...props} >
-            {itemsInmProcess.map(process => {
-              if (typeof process === 'string')
-                return <option value={process}>{process}</option>
-              return <option value={process.value}>{process.text}</option>
-            })}
-          </Select>}
+        <FormField label='Cuidadora viajando sola?'>
+          {props => itemsYesNo.map((value, index) => <Radio
+            key={`radio-${index}`}
+            className='margin-rigth-1'
+            name="caregiver"
+            value={value}
+            label={value}
+            checked={isChecked(value, 'caregiver')}
+            onChange={({ target }) => updateField('caregiver', target.value)}
+            {...props} />)}
         </FormField>
       </Box>
+      <Box className="field-container" width={1 / 5} >
+        <FormField label='Adulto mayor viajando sola?'>
+          {props => itemsYesNo.map((value, index) => <Radio
+            key={`radio-${index}`}
+            className='margin-rigth-1'
+            name="elder-alone"
+            value={value}
+            label={value}
+            checked={isChecked(value, 'elderAlone')}
+            onChange={({ target }) => updateField('elderAlone', target.value)}
+            {...props} />)}
+        </FormField>
+      </Box>
+
 
 
 
@@ -385,21 +557,65 @@ const QuickRegister = ({ state, updateField }) => {
     <Box className="quick-register" display='flex' flexWrap='wrap' >
 
       <Box className="field-container" width={1 / 5} >
-        <FormField key='-key'  label='Nombre'>
-          {props => <Input
-            placeholder='Nombre o Nombres'
-            value={state.name}
-            onChange={({ target }) => updateField('name', target.value)}
-            {...props} />}
+        <FormField label='Tipo de zona de nacimiento'>
+          {props => <Select
+            value={state.bornInZoneType}
+            onChange={({ target }) => {
+              updateField('bornInZoneType', target.value);
+            }}
+            {...props} >
+            {itemsZoneType.map(zoneType => {
+              if (typeof zoneType === 'string')
+                return <option key={`${zoneType}-index`} value={zoneType}>{zoneType}</option>
+              return <option key={`${zoneType.value}-index`} value={zoneType.value}>{zoneType.text}</option>
+            })}
+          </Select>}
+        </FormField>
+      </Box>
+      <Box className="field-container" width={1 / 5} >
+        <FormField label='Religión'>
+          {props => <Select
+            value={state.religion}
+            onChange={({ target }) => updateField('religion', target.value)}
+            {...props} >
+            {itemsReligions.map(religion => {
+              if (typeof religion === 'string')
+                return <option key={`${religion}-index`} value={religion}>{religion}</option>
+              return <option key={`${religion.value}-index`} value={religion.value}>{religion.text}</option>
+            })}
+          </Select>}
         </FormField>
       </Box>
 
-
-
-
+      {(state.religion && state.religion.toLowerCase() === 'otro') ?
+        <Box className="field-container" width={1 / 5} >
+          <FormField label='Nombre de la religión'>
+            {props => <Input
+              placeholder='Nombre de la religión profesada'
+              value={state.otherReligion}
+              onChange={({ target }) => updateField('otherReligion', target.value)}
+              {...props} />}
+          </FormField>
+        </Box> : null}
 
     </Box >
-    <PhotoCapModal setImg={setImageSrc} open={toogleModal} />
+
+
+    <Box className="quick-register" display='flex' flexWrap='wrap' flexDirection='row-reverse'>
+      <Box className="field-container" width={1 / 5}>
+        <Button width='100%' appearance="primary" onClick={registerImmigrant}>
+          Registrar
+        </Button>
+      </Box>
+      <Box className="field-container" width={1 / 5}>
+        <Button width='100%' appearance="destructive" onClick={() => navigate(`/`)}>
+          Cancelar
+        </Button>
+      </Box>
+    </Box>
+
+
+    <PhotoCapModal id='user-photo' setImg={setUserImgSrc} open={toogleUserImgModal} />
   </>);
 }
 

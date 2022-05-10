@@ -1,14 +1,9 @@
-import React, { /* useState, */ useReducer } from 'react';
+import React, { /* useState, */ useReducer, useEffect } from 'react';
 
 import QuickRegister from './QuickRegister';
 import FullRegister from './FullRegister';
+import { useLocation } from "react-router-dom";
 
-// import {
-//   Box,
-//   Button,
-//   Input,
-//   Label,
-// } from '@sproutsocial/racine';
 
 const initialState = {
   fullRegister: false,
@@ -21,6 +16,13 @@ const reducer = (state, action) => {
       return {
         ...state,
         [action.fieldName]: action.payload,
+      };
+    }
+    case 'pass-state': {
+      console.log('action.state', action.state)
+      return {
+        ...state,
+        ...action.state,
       };
     }
     case '__': {
@@ -38,6 +40,7 @@ const reducer = (state, action) => {
 const RegisterPage = () => {
 
   const [state, dispatch] = useReducer(reducer, initialState);
+  const location = useLocation();
 
   const updateField = (field, value) => {
     dispatch({
@@ -46,6 +49,15 @@ const RegisterPage = () => {
       payload: value,
     })
   }
+  
+  
+  useEffect(() => {
+    dispatch({
+      type: 'pass-state',
+      state: location.state,
+    })
+  }, []);
+
 
 
 

@@ -1,0 +1,22 @@
+.login-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
+    border: solid 1px #8cb6ff;
+    border-radius: 2rem;
+    box-shadow: 2px 3px 10px -5px #53637e;
+    padding: 2rem;
+    background-color: #d5e9f356;
+
+}
+
+.login-link-actions {
+    font-size: 12px;
+    color: rgb(153, 190, 223) !important;
+}
+
+.login-button {
+    width: 100%;
+}

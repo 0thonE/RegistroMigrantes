@@ -2,10 +2,12 @@
 @import './components/DataCard/data-card';
 @import './components/NavBar/nav-bar';
 @import './components/PhotoCapModal/photo-cap-modal';
+@import './components/FileAttach/file-attach';
 
 //Pages
 @import "./pages/SearchPage/search-page";
 @import "./pages/RegisterPage/register-page";
+@import "./pages/LoginPage/login-page";
 
 .wrapper {
     margin: auto;

@@ -24,3 +24,9 @@
         width: 100%;
     }
 }
+
+.scrollable-listbox{
+    max-height: 25vh;
+	overflow-y: scroll;
+    z-index: 999 !important;
+}
