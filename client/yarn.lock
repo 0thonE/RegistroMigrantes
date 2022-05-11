@@ -2030,10 +2030,10 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@sproutsocial/racine@^11.4.0":
-  version "11.4.0"
-  resolved "https://registry.yarnpkg.com/@sproutsocial/racine/-/racine-11.4.0.tgz#f0af2a20c4dc13fe6a2d59ede8b1ebd17bcac248"
-  integrity sha512-gviXg8qJJqrijs1PGfXd92J20+dDZz2tRKjx2Zag0rlBOF+iXOohOyJfsRrqweHrDIb5d7VsPbgQmkNkCrhdKw==
+"@sproutsocial/racine@@11.0.1":
+  version "11.0.1"
+  resolved "https://registry.yarnpkg.com/@sproutsocial/racine/-/racine-11.0.1.tgz#87a46648a844017c3d1e19637b76e303255c1fa8"
+  integrity sha512-lJl1/489FgkVbAbmexGKUMYZf1xGVFIhptqTS4VfpICTNVjYp59y/7FGBjeRHSRYv9j4lLLqKvhNrlA2Yh4D6Q==
   dependencies:
     "@styled-system/theme-get" "^5.1.2"
     classnames "^2.2.6"
