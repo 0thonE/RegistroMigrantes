@@ -1,12 +1,12 @@
 import React, { useState, useReducer } from 'react';
 
-import {
-  Button,
-  Input,
-  FormField,
-  Select,
-  Link
-} from '@sproutsocial/racine';
+// import {
+//   Button,
+//   Input,
+//   FormField,
+//   Select,
+//   Link
+// } from '@sproutsocial/racine';
 
 import firebaseApp from "../../firebase/conection";
 import {
@@ -139,6 +139,50 @@ const LoginPage = () => {
       <h3>{isRegistering ? "Registrando nuevo usuario" : "Inicia sesión"}</h3>
 
       <form onSubmit={submitHandler}>
+        <label>Correo
+          <input
+            placeholder={isRegistering ? 'Correo del nuevo usuario' : 'Ingrese su correo'}
+            type="email" id="email" error={isRegistering ? 'Ingrese correo valido' : 'Correo invalido'}
+            onChange={({ target }) => dispatch({
+              type: 'field',
+              fieldName: 'email',
+              payload: target.value,
+            })}/>
+        </label>
+
+        {!isRegistering ?
+          <label>Contraseña<input
+              type="password" id="password"
+              placeholder='Ingrese su contraseña'
+              error='Contraseña o correo invalido'
+              onChange={({ target }) => dispatch({
+                type: 'field',
+                fieldName: 'password',
+                payload: target.value,
+              })}
+              />
+          </label> :
+          <label>rol<select
+              id='gender'
+              value={state.gender}
+              onChange={({ target }) => dispatch({
+                type: 'field',
+                fieldName: 'role',
+                payload: target.value,
+              })}>
+              <option value="">Selecciona un rol...</option>
+              <option value="admin">Administrador</option>
+              <option value="analist">Analista</option>
+              <option value="volunteer">Voluntario</option>
+            </select>
+          </label>}
+
+        <button className='login-button' appearance='primary' onClick={submitHandler}>
+          {isRegistering ? "Crear Usuario" : "Ingresar"}
+        </button>
+
+      </form>
+      {/* <form onSubmit={submitHandler}>
         <FormField
           label='Correo'>
           {props => <Input
@@ -188,9 +232,10 @@ const LoginPage = () => {
           {isRegistering ? "Crear Usuario" : "Ingresar"}
         </Button>
 
-      </form>
+      </form> */}
 
-      <Link className='login-link-actions' underline onClick={() => setIsRegistering(!isRegistering)}>{isRegistering ? "" : "Agregar Usuario"}</Link>
+      <a className='login-link-actions' underline onClick={() => setIsRegistering(!isRegistering)}>{isRegistering ? "" : "Agregar Usuario"}</a>
+      {/* <Link className='login-link-actions' underline onClick={() => setIsRegistering(!isRegistering)}>{isRegistering ? "" : "Agregar Usuario"}</Link> */}
     </div >
   );
 }

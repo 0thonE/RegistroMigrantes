@@ -1,7 +1,7 @@
 import React from 'react'
 import './App.scss';
 import { Routes, Route } from 'react-router-dom';
-import { ThemeProvider } from '@sproutsocial/racine'
+// import { ThemeProvider } from '@sproutsocial/racine';
 
 // Components
 import { NavBar } from "./components";
@@ -13,7 +13,7 @@ import LoginPage from "./pages/LoginPage";
 const App = (props) => {
   return (
 
-    <ThemeProvider>
+    // <ThemeProvider>
       <div className="App">
         <NavBar />
         <div className="wrapper">
@@ -22,7 +22,7 @@ const App = (props) => {
           </Routes>
         </div>
       </div>
-    </ThemeProvider>
+    // </ThemeProvider>
   )
 }
 
