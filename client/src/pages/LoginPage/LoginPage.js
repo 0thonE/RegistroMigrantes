@@ -1,7 +1,6 @@
 import React, { useState, useReducer } from 'react';
 
 import {
-  Box,
   Button,
   Input,
   FormField,
@@ -17,7 +16,7 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 
-import { getFirestore, doc, collection, setDoc } from "firebase/firestore";
+import { getFirestore, doc, setDoc } from "firebase/firestore";
 
 const auth = getAuth(firebaseApp);
 

@@ -4,15 +4,13 @@ import './App.scss';
 import { Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from '@sproutsocial/racine'
 
-
 // Components
 import { NavBar } from "./components";
 
 //Pages
-import SearchPage from "./pages/SearchPage";
-import RegisterPage from "./pages/RegisterPage";
+// import SearchPage from "./pages/SearchPage";
+// import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
-
 
 const App = props => (
   <ThemeProvider>
@@ -21,9 +19,10 @@ const App = props => (
       <NavBar />
       <div className="wrapper">
         <Routes>
-          <Route path="/" element={<SearchPage />} />
-          <Route path="/registro" element={<RegisterPage />} />
-          <Route path="/login" element={<LoginPage />} />º
+          {/* <Route path="/" element={<SearchPage />} />
+          <Route path="/registro" element={<RegisterPage />} /> */}
+          <Route path="/" element={<LoginPage />} />
+          {/* <Route path="/login" element={<LoginPage />} /> */}
         </Routes>
       </div>
     </div>
