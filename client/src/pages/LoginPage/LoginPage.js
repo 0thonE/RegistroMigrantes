@@ -6,7 +6,7 @@ import {
   FormField,
   Select,
   Link
-} from '@sproutsocial/racine'
+} from '@sproutsocial/racine';
 
 import firebaseApp from "../../firebase/conection";
 import {
