@@ -1,9 +1,28 @@
 import React from 'react'
 import './App.scss';
+import { Routes, Route } from 'react-router-dom';
+import { ThemeProvider } from '@sproutsocial/racine'
 
-const App = () => {
+// Components
+import { NavBar } from "./components";
+
+// Pages
+import LoginPage from "./pages/LoginPage";
+
+
+const App = (props) => {
   return (
-    <div className="App">App</div>
+
+    <ThemeProvider>
+      <div className="App">
+        <NavBar />
+        <div className="wrapper">
+          <Routes>
+            <Route path="/" element={<LoginPage />} />
+          </Routes>
+        </div>
+      </div>
+    </ThemeProvider>
   )
 }
 

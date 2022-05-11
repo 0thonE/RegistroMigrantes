@@ -1,3 +1,5 @@
+@import "~bootstrap/scss/bootstrap";
+
 //Components
 // @import './components/DataCard/data-card';
 // @import './components/NavBar/nav-bar';
@@ -7,7 +9,7 @@
 //Pages
 // @import "./pages/SearchPage/search-page";
 // @import "./pages/RegisterPage/register-page";
-// @import "./pages/LoginPage/login-page";
+@import "./pages/LoginPage/login-page";
 
 .wrapper {
     margin: auto;
