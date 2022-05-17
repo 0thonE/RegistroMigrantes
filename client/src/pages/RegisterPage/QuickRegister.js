@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 
 import {
   Box,
-  Button,
   FormField,
   Input,
   Image,
@@ -438,7 +437,7 @@ const QuickRegister = ({ state, updateField, updateFile }) => {
               value={state.comarProcess}
               onChange={({ target }) => {
                 updateField('comarProcess', target.value);
-                idDocumentRef.current.click();
+                comarDocumentRef.current.click();
               }}
               {...props} >
               {itemsInternationalProtection.map(process => {
@@ -547,7 +546,7 @@ const QuickRegister = ({ state, updateField, updateFile }) => {
 
           {(state.hasNoLegalCompanion && state.hasNoLegalCompanion.toLowerCase() === 'si') ?
             <Box className="field-container" width={1 / 5} >
-              <FormField label='Acompañante no legal'>
+              <FormField label='Parentesco acompañante no legal'>
                 {props => <Select
                   value={state.legalCompanion}
                   onChange={({ target }) => {
