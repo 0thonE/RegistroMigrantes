@@ -171,10 +171,10 @@ const RegisterPage = () => {
 
   return (
     <div className="immigrant-register-page">
-      <QuickRegister updateField={updateField} updateFile={updateFile} state={state} />
+      <QuickRegister updateField={updateField} updateFile={updateFile} state={state} /><br/>
       <FullRegister updateField={updateField} />
 
-
+      <br /><br /><br />
       <Box className="quick-register" display='flex' flexWrap='wrap' flexDirection='row-reverse'>
         <Box className="field-container" width={1 / 5}>
           <LoaderButton width='100%' appearance="primary" isLoading={state.isLoading} onClick={registerImmigrant}>

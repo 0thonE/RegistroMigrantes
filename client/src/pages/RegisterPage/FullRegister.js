@@ -10,15 +10,16 @@ const FullRegister = ({ state, updateField, updateFile }) => {
   const [showMore, setShowMore] = useState(false);
   return (
     <>
-      {showMore ?
+      {/* {showMore ?
         <>info
           <Text fontSize={200}>
-            <Link onClick={() => setShowMore(!showMore)}>Mostrar nenos</Link>?
-          </Text></>
+            <Link onClick={() => setShowMore(!showMore)}>Registro rápido</Link>
+          </Text>
+        </>
         : <Text fontSize={200} textDecoration='underline'>
-          <Link onClick={() => setShowMore(!showMore)}>Mostrar más...</Link>
+          <Link onClick={() => setShowMore(!showMore)}>Registro completo...</Link>
         </Text>
-      }
+      } */}
     </>
   )
 }

@@ -14,6 +14,7 @@ import {
 import { PhotoCapModal, /* FileAttach */ } from '../../components'
 
 import { SelectableCountries } from "../../utilities/SelectableCountries";
+import { SelectableOccupations } from "../../utilities/SelectableOccupations";
 
 import defaultImage from '../../assets/picturePlaceHolder.png';
 
@@ -31,13 +32,21 @@ const itemsInmProcess = [{ value: '', text: 'Selecciona un proceso...' }, 'Tarje
 const itemsLegalCompanion = [{ value: '', text: 'Selecciona un acompañante...' }, 'Papá', 'Mamá', 'Ambxs', 'Tutor legal'];
 const itemsNoLegalCompanion = [{ value: '', text: 'Selecciona un acompañante...' }, 'Hermanx', 'Primx', 'Tix', 'Amigx', 'Abuelx'];
 //socio demographic
-// const itemsZoneType = [{ value: '', text: 'Selecciona tipo de comunidad...' }, 'Ciudad', 'Pueblo', 'Aldea'];
-// const itemsReligions = [{ value: '', text: 'Selecciona tipo de comunidad...' }, 'Cátolica', 'Evangélica', 'Cristiana', 'Testigo de Jehová', 'Mormona', 'Anglicana', 'Protestante', 'Prebiteriana', 'Ateo', 'Otro'];
+const itemsZoneType = [{ value: '', text: 'Selecciona tipo de comunidad...' }, 'Ciudad', 'Pueblo', 'Aldea'];
+const itemsReligions = [{ value: '', text: 'Selecciona una creencia...' }, 'Cátolica', 'Evangélica', 'Cristiana', 'Testigo de Jehová', 'Mormona', 'Anglicana', 'Protestante', 'Prebiteriana', 'Ateo', 'Otro'];
+const itemsSpokenLanguages = [{ value: '', text: 'Selecciona una lengua...' }, 'Español', 'Inglés', 'Francés', 'Portugués', 'Otro'];
+const itemsSpokenLanguagesType = [{ value: '', text: 'Selecciona un tipo lengua...' }, 'Materna', 'Complementaria'];
+const itemsSpokenLanguagesLevel = [{ value: '', text: 'Selecciona un nivel lengua...' }, 'Principiante', 'Intermedio', 'Avanzado'];
+const itemsIndigenousCommunities = [{ value: '', text: 'Selecciona un nivel lengua...' }, 'Maya', 'Quiche', 'Tojoabal', 'Chol', 'Garifuna', 'Otro'];
+const itemsStudyGrades = [{ value: '', text: 'Selecciona un nivel lengua...' }, 'Preescolar', 'Primaria / 6 años de estudio', 'Secundaria / 9 años de estudio', 'Bachillerato / 12 años de estudio', 'Licenciatura', 'Maestría', 'Doctorado'];
+const itemsOccupations = SelectableOccupations();
+const itemsDependantsNumber = [{ value: '', text: 'Selecciona cuantos dependientes...' }, '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Más de 10'];
+const itemsDependantsRelationships = [{ value: '', text: 'Selecciona cuantos dependientes...' }, 'Madre o padre', 'hija/o', 'sobrina/o', 'abuela/o', 'hermana/o', 'sin vínculo familiar'];
 
 
 const QuickRegister = ({ state, updateField, updateFile }) => {
   const [toogleUserImgModal, setToogleUserImgModal] = useState(0);
-  const [toogleComarImgModal, setToogleComarImgModal] = useState(0);
+  // const [toogleComarImgModal, setToogleComarImgModal] = useState(0);
   const [UserImgSrc, setUserImgSrc] = useState(defaultImage);
   const [isUnderAge, setIsUnderAge] = useState(false);
 
@@ -536,23 +545,23 @@ const QuickRegister = ({ state, updateField, updateFile }) => {
               {...props} />)}
           </FormField>
 
-        {(state.hasNoLegalCompanion && state.hasNoLegalCompanion.toLowerCase() === 'si') ?
-          <Box className="field-container" width={1 / 5} >
-            <FormField label='Acompañante Legal '>
-              {props => <Select
-                value={state.legalCompanion}
-                onChange={({ target }) => {
-                  updateField('legalCompanion', target.value);
-                }}
-                {...props} >
-                {itemsLegalCompanion.map(companion => {
-                  if (typeof companion === 'string')
-                    return <option key={`${companion}-index`} value={companion}>{companion}</option>
-                  return <option key={`${companion.value}-index`} value={companion.value}>{companion.text}</option>
-                })}
-              </Select>}
-            </FormField>
-          </Box> : null}
+          {(state.hasNoLegalCompanion && state.hasNoLegalCompanion.toLowerCase() === 'si') ?
+            <Box className="field-container" width={1 / 5} >
+              <FormField label='Acompañante no legal'>
+                {props => <Select
+                  value={state.legalCompanion}
+                  onChange={({ target }) => {
+                    updateField('noLgalCompanion', target.value);
+                  }}
+                  {...props} >
+                  {itemsNoLegalCompanion.map(companion => {
+                    if (typeof companion === 'string')
+                      return <option key={`${companion}-index`} value={companion}>{companion}</option>
+                    return <option key={`${companion.value}-index`} value={companion.value}>{companion.text}</option>
+                  })}
+                </Select>}
+              </FormField>
+            </Box> : null}
         </Box>
 
       </> : null}
@@ -585,6 +594,321 @@ const QuickRegister = ({ state, updateField, updateFile }) => {
       </Box>
 
     </Box >
+
+    <br /><br />
+    <h3>Datos Sociodemográficos</h3>
+    <br />
+    <Box className="quick-register" display='flex' flexWrap='wrap' >
+
+      <Box className="field-container" width={1 / 5} >
+        <FormField label='Nacido en zona:'>
+          {props => <Select
+            id='born-in-zone'
+            value={state.bornInZoneType}
+            onChange={({ target }) => updateField('bornInZoneType', target.value)}
+            {...props} >
+            {itemsZoneType.map(zoneType => {
+              if (typeof zoneType === 'string')
+                return <option key={`${zoneType}-index`} value={zoneType}>{zoneType}</option>
+              return <option key={`${zoneType.value}-index`} value={zoneType.value}>{zoneType.text}</option>
+            })}
+          </Select>}
+        </FormField>
+      </Box>
+
+      <Box className="field-container" width={1 / 5} >
+        <FormField label='Religion:'>
+          {props => <Select
+            id='religion'
+            value={state.religion}
+            onChange={({ target }) => updateField('religion', target.value)}
+            {...props} >
+            {itemsReligions.map(religion => {
+              if (typeof religion === 'string')
+                return <option key={`${religion}-index`} value={religion}>{religion}</option>
+              return <option key={`${religion.value}-index`} value={religion.value}>{religion.text}</option>
+            })}
+          </Select>}
+        </FormField>
+      </Box>
+
+
+      {(state.religion && state.religion.toLowerCase() === 'otro') ?
+        <Box className="field-container" width={1 / 5} >
+          <FormField label='Otra religion:'>
+            {props => <Input
+              placeholder='¿Cuál es tu creencia?'
+              value={state.otherReligion}
+              onChange={({ target }) => updateField('otherReligion', target.value)}
+              {...props} />}
+          </FormField>
+        </Box> : null}
+
+      <Box className="field-container" width={1 / 5} >
+        <FormField label='Lenguas Habladas:'>
+          {props => <Select
+            id='spoken-languages'
+            value={state.spokenLanguages}
+            onChange={({ target }) => updateField('spokenLanguages', target.value)}
+            {...props} >
+            {itemsSpokenLanguages.map(religion => {
+              if (typeof religion === 'string')
+                return <option key={`${religion}-index`} value={religion}>{religion}</option>
+              return <option key={`${religion.value}-index`} value={religion.value}>{religion.text}</option>
+            })}
+          </Select>}
+        </FormField>
+      </Box>
+
+
+      {(state.spokenLanguages && state.spokenLanguages.toLowerCase() === 'otro') ?
+        <Box className="field-container" width={1 / 5} >
+          <FormField label='Otra Lengua:'>
+            {props => <Input
+              placeholder='¿Hablas otra lengua?'
+              value={state.otherSpokenLanguage}
+              onChange={({ target }) => updateField('otherSpokenLanguage', target.value)}
+              {...props} />}
+          </FormField>
+        </Box> : null}
+
+      <Box className="field-container" width={1 / 5} >
+        <FormField label='Tipo de lengua'>
+          {props => <Select
+            id='spoken-languages-type'
+            value={state.spokenLanguageType}
+            onChange={({ target }) => updateField('spokenLanguageType', target.value)}
+            {...props} >
+            {itemsSpokenLanguagesType.map(lenguageType => {
+              if (typeof lenguageType === 'string')
+                return <option key={`${lenguageType}-index`} value={lenguageType}>{lenguageType}</option>
+              return <option key={`${lenguageType.value}-index`} value={lenguageType.value}>{lenguageType.text}</option>
+            })}
+          </Select>}
+        </FormField>
+      </Box>
+
+      <Box className="field-container" width={1 / 5} >
+        <FormField label='Nivel de lengua'>
+          {props => <Select
+            id='spoken-languages-level'
+            value={state.spokenLanguageLevel}
+            onChange={({ target }) => updateField('spokenLanguageLevel', target.value)}
+            {...props} >
+            {itemsSpokenLanguagesLevel.map(lenguageType => {
+              if (typeof lenguageType === 'string')
+                return <option key={`${lenguageType}-index`} value={lenguageType}>{lenguageType}</option>
+              return <option key={`${lenguageType.value}-index`} value={lenguageType.value}>{lenguageType.text}</option>
+            })}
+          </Select>}
+        </FormField>
+      </Box>
+
+      <Box className="field-container" width={1 / 5} >
+        <FormField label='¿Pertenece pueblo indigena?'>
+          {props => itemsYesNo.map((value, index) => <Radio
+            key={`radio-${index}`}
+            className='margin-rigth-1'
+            name="from-indigenous-community"
+            value={value}
+            label={value}
+            checked={isChecked(value, 'fromIndigenousCommunity')}
+            onChange={({ target }) => updateField('fromIndigenousCommunity', target.value)}
+            {...props} />)}
+        </FormField>
+      </Box>
+
+      {(state.fromIndigenousCommunity && state.fromIndigenousCommunity.toLowerCase() === 'si') ?
+        <>
+          <Box className="field-container" width={1 / 5} >
+            <FormField label='Pueblo indígena:'>
+              {props => <Select
+                id='indigenous-community'
+                value={state.indigenousCommunity}
+                onChange={({ target }) => updateField('indigenousCommunity', target.value)}
+                {...props} >
+                {itemsIndigenousCommunities.map(community => {
+                  if (typeof community === 'string')
+                    return <option key={`${community}-index`} value={community}>{community}</option>
+                  return <option key={`${community.value}-index`} value={community.value}>{community.text}</option>
+                })}
+              </Select>}
+            </FormField>
+          </Box>
+
+          {(state.indigenousCommunity && state.indigenousCommunity.toLowerCase() === 'otro') ?
+            <Box className="field-container" width={1 / 5} >
+              <FormField label='Otra comunidad indigena:'>
+                {props => <Input
+                  placeholder='A que comunidad perteneces'
+                  value={state.otherIndigenousCommunity}
+                  onChange={({ target }) => updateField('otherIndigenousCommunity', target.value)}
+                  {...props} />}
+              </FormField>
+            </Box> : null}
+        </> : null}
+
+      <Box className="field-container" width={1 / 5} >
+        <FormField label='Grado de estudios:'>
+          {props => <Select
+            id='study-grade'
+            value={state.studyGradel}
+            onChange={({ target }) => updateField('studyGradel', target.value)}
+            {...props} >
+            {itemsStudyGrades.map(level => {
+              if (typeof level === 'string')
+                return <option key={`${level}-index`} value={level}>{level}</option>
+              return <option key={`${level.value}-index`} value={level.value}>{level.text}</option>
+            })}
+          </Select>}
+        </FormField>
+      </Box>
+
+      <Box className="field-container" width={1 / 5} >
+        <FormField label='¿Sabes Leer?'>
+          {props => itemsYesNo.map((value, index) => <Radio
+            key={`radio-${index}`}
+            className='margin-rigth-1'
+            name="can-read"
+            value={value}
+            label={value}
+            checked={isChecked(value, 'canRead')}
+            onChange={({ target }) => updateField('canRead', target.value)}
+            {...props} />)}
+        </FormField>
+      </Box>
+
+      <Box className="field-container" width={1 / 5} >
+        <FormField label='¿Sabes Escribir?'>
+          {props => itemsYesNo.map((value, index) => <Radio
+            key={`radio-${index}`}
+            className='margin-rigth-1'
+            name="can-write"
+            value={value}
+            label={value}
+            checked={isChecked(value, 'canWrite')}
+            onChange={({ target }) => updateField('canWrite', target.value)}
+            {...props} />)}
+        </FormField>
+      </Box>
+
+      <Box className="field-container" width={1 / 5} >
+        <FormField label='Profesión'>
+          {props => <Input
+            placeholder='Tu profesión - estudios'
+            value={state.profession}
+            onChange={({ target }) => updateField('profession', target.value)}
+            {...props} />}
+        </FormField>
+      </Box>
+
+      <Box className="field-container" width={1 / 5} >
+        <FormField label='Ocupación en el lugar de origen'>
+          {props => <ListboxButton
+            width="100%"
+            aria-label="ocupación en país de origen"
+            content={
+              <Listbox value={state.occupation} width="100%"
+                onChange={(selection) => updateField('occupation', selection)} >
+                <Listbox.Group>
+                  <Listbox.FilterInput placeholder="Buscar" mb={300} />
+                  <div className='scrollable-listbox'>
+                    {itemsOccupations.map((ocuppation, i) => {
+                      if (typeof ocuppation === 'string')
+                        return <Listbox.Item key={`${ocuppation}-index`} value={ocuppation}>{ocuppation}</Listbox.Item>
+                      return <Listbox.Item key={`${ocuppation.value}-index`} value={ocuppation.value}>{ocuppation.text}</Listbox.Item>
+                    })}
+                  </div>
+                </Listbox.Group>
+              </Listbox>
+            }
+          >
+            {state.occupation || "Selecciona una ocupación"}
+          </ListboxButton>}
+        </FormField>
+      </Box>
+
+      <Box className="field-container" width={1 / 5} >
+        <FormField label='¿Cuenta con dependientes?'>
+          {props => itemsYesNo.map((value, index) => <Radio
+            key={`radio-${index}`}
+            className='margin-rigth-1'
+            name="has-dependents"
+            value={value}
+            label={value}
+            checked={isChecked(value, 'hasDependents')}
+            onChange={({ target }) => updateField('hasDependents', target.value)}
+            {...props} />)}
+        </FormField>
+      </Box>
+
+      {(state.hasDependents && state.hasDependents.toLowerCase() === 'si') ?
+        <>
+          <Box className="field-container" width={1 / 5} >
+            <FormField label='Número de dependientes'>
+              {props => <Select
+                id='study-grade'
+                value={state.dependentsNumber}
+                onChange={({ target }) => updateField('dependentsNumber', target.value)}
+                {...props} >
+                {itemsDependantsNumber.map(number => {
+                  if (typeof number === 'string')
+                    return <option key={`${number}-index`} value={number}>{number}</option>
+                  return <option key={`${number.value}-index`} value={number.value}>{number.text}</option>
+                })}
+              </Select>}
+            </FormField>
+          </Box>
+          <Box className="field-container" width={1 / 5} >
+            <FormField label='Parentesco con dependientes'>
+              {props => <Select
+                id='relation-with-dependents'
+                value={state.relationshipDependents}
+                onChange={({ target }) => updateField('relationshipDependents', target.value)}
+                {...props} >
+                {itemsDependantsRelationships.map(relationship => {
+                  if (typeof relationship === 'string')
+                    return <option key={`${relationship}-index`} value={relationship}>{relationship}</option>
+                  return <option key={`${relationship.value}-index`} value={relationship.value}>{relationship.text}</option>
+                })}
+              </Select>}
+            </FormField>
+          </Box>
+        </> : null}
+
+      <Box className="field-container" width={1 / 5} >
+        <FormField label='¿Cuenta con hijos?'>
+          {props => itemsYesNo.map((value, index) => <Radio
+            key={`radio-${index}`}
+            className='margin-rigth-1'
+            name="has-children"
+            value={value}
+            label={value}
+            checked={isChecked(value, 'hasChildren')}
+            onChange={({ target }) => updateField('hasChildren', target.value)}
+            {...props} />)}
+        </FormField>
+      </Box>
+
+      {(state.hasChildren && state.hasChildren.toLowerCase() === 'si') ?
+        <Box className="field-container" width={1 / 5} >
+          <FormField label='Número de hijos'>
+            {props => <Select
+              id='children-number'
+              value={state.childrenNumber}
+              onChange={({ target }) => updateField('childrenNumber', target.value)}
+              {...props} >
+              {itemsDependantsNumber.map(number => {
+                if (typeof number === 'string')
+                  return <option key={`${number}-index`} value={number}>{number}</option>
+                return <option key={`${number.value}-index`} value={number.value}>{number.text}</option>
+              })}
+            </Select>}
+          </FormField>
+        </Box> : null}
+
+
+    </Box>
 
     <PhotoCapModal id='user-photo' setImg={setUserImgSrc} open={toogleUserImgModal} />
   </>);
