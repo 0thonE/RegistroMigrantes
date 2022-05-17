@@ -90,7 +90,7 @@ const reducer = (state, action) => {
     case 'uploading': {
       return {
         ...state,
-        // isLoading: true
+        isLoading: true
       };
     }
     default:
@@ -156,7 +156,8 @@ const RegisterPage = () => {
           });
       }
 
-      setDoc(docuRef, { ...restState, id: dRef });
+      await setDoc(docuRef, { ...restState, id: dRef });
+      navigate('/')
     } catch (error) {
     }
 

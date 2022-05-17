@@ -293,10 +293,10 @@ const SearchPage = () => {
           </Box>))}
       </Box>
       <br /><br /><br />
-      {/* <Box className="quick-register" display='flex' flexWrap='wrap' flexDirection='row-reverse'>
+      {/* <Box className="download-fab" display='flex' flexWrap='wrap' flexDirection='row-reverse'>
         <Box className="field-container" width={1 / 5}>
-          <Button width='100%' appearance="placeholder" isLoading={state.isLoading} onClick={downloadImmigrants}>
-            Registrar
+          <Button width='100%' appearance="placeholder"  onClick={downloadImmigrants}>
+            Descargar registros
           </Button>
         </Box>
       </Box> */}
