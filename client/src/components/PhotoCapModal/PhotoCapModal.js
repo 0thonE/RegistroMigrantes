@@ -19,19 +19,20 @@ const videoConstraints = {
   facingMode: "user"
 }
 
-const PhotoCapModal = ({ setImg, open = false }) => {
+const PhotoCapModal = ({ setImg, open = false, modalTitle = 'Captura de imagen', modalSubtitle = 'Toma la foto de la persona a registrar' }) => {
   const [openModal, setOpenModal] = useState(true);
   const [imageSrc, setImageSrc] = useState(defaultImage);
 
   useEffect(() => {
-    setOpenModal(open);
-  }, [open]);
+    setOpenModal(!openModal);
+  }, [open]);//eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     setImg(imageSrc)
-  }, [imageSrc]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [imageSrc]); //eslint-disable-line react-hooks/exhaustive-deps
 
   const webcamRef = useRef(null);
+
 
   const capture = useCallback(() => {
     setImageSrc(webcamRef.current.getScreenshot());
@@ -44,23 +45,17 @@ const PhotoCapModal = ({ setImg, open = false }) => {
   }
 
   return (
-
     <Modal
-      //appElementSelector='___gatsby'
       isOpen={openModal}
       onClose={() => setOpenModal(false)}
       closeButtonLabel="Cerrar Modal"
       zIndex={900}
     >
-      {/* <Webcam /> */}
-
       <Modal.Header
-        title="Captura de imagen"
-        subtitle="Toma la foto de la persona a registrar"
+        title={modalTitle}
+        subtitle={modalSubtitle}
       />
-
       <Modal.Content className='modal-content'>
-
         <Webcam
           audio={false}
           ref={webcamRef}
@@ -73,7 +68,7 @@ const PhotoCapModal = ({ setImg, open = false }) => {
         <Box display="flex" justifyContent="flex-end" >
           <Box className="margin-rigth-1" >
             <Button appearance="destructive" onClick={(e) => { closeModal(); }} px={500}>
-              Cerrar
+              Cancelar
             </Button>
           </Box>
           <Box>

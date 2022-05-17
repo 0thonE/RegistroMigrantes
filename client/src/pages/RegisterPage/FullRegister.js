@@ -1,8 +1,26 @@
-import React from 'react'
+import React, { useState } from 'react'
 
-const FullRegister = () => {
+import {
+  // Box,
+  Text,
+  Link
+} from '@sproutsocial/racine';
+
+const FullRegister = ({ state, updateField, updateFile }) => {
+  const [showMore, setShowMore] = useState(false);
   return (
-    <div>FullRegister</div>
+    <>
+      {/* {showMore ?
+        <>info
+          <Text fontSize={200}>
+            <Link onClick={() => setShowMore(!showMore)}>Registro rápido</Link>
+          </Text>
+        </>
+        : <Text fontSize={200} textDecoration='underline'>
+          <Link onClick={() => setShowMore(!showMore)}>Registro completo...</Link>
+        </Text>
+      } */}
+    </>
   )
 }
 

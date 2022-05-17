@@ -1,31 +1,33 @@
-import React from 'react';
-import 'bootstrap/dist/css/bootstrap.css'
+import React from 'react'
 import './App.scss';
 import { Routes, Route } from 'react-router-dom';
-import { ThemeProvider } from '@sproutsocial/racine'
-
+import { ThemeProvider } from '@sproutsocial/racine';
 
 // Components
 import { NavBar } from "./components";
 
-//Pages
+// Pages
+import LoginPage from "./pages/LoginPage";
 import SearchPage from "./pages/SearchPage";
 import RegisterPage from "./pages/RegisterPage";
 
 
-const App = props => (
-  <ThemeProvider>
+const App = (props) => {
+  return (
 
-    <div className="App">
-      <NavBar />
-      <div className="wrapper">
-        <Routes>
+    <ThemeProvider>
+      <div className="App">
+        <NavBar />
+        <div className="wrapper">
+          <Routes>
           <Route path="/" element={<SearchPage />} />
           <Route path="/registro" element={<RegisterPage />} />
-        </Routes>
+          <Route path="/login" element={<LoginPage />} />º
+          </Routes>
+        </div>
       </div>
-    </div>
-  </ThemeProvider>
-)
+    </ThemeProvider>
+  )
+}
 
-export default App;
+export default App
