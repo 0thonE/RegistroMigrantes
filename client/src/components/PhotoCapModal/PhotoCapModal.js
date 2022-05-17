@@ -33,6 +33,7 @@ const PhotoCapModal = ({ setImg, open = false, modalTitle = 'Captura de imagen',
 
   const webcamRef = useRef(null);
 
+
   const capture = useCallback(() => {
     setImageSrc(webcamRef.current.getScreenshot());
   }, [webcamRef]);
@@ -44,7 +45,6 @@ const PhotoCapModal = ({ setImg, open = false, modalTitle = 'Captura de imagen',
   }
 
   return (
-
     <Modal
       isOpen={openModal}
       onClose={() => setOpenModal(false)}
@@ -55,7 +55,6 @@ const PhotoCapModal = ({ setImg, open = false, modalTitle = 'Captura de imagen',
         title={modalTitle}
         subtitle={modalSubtitle}
       />
-
       <Modal.Content className='modal-content'>
         <Webcam
           audio={false}

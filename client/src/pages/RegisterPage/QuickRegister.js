@@ -1,9 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-import firebaseApp from "../../firebase/conection";
-
-import { getFirestore, doc, collection, setDoc } from "firebase/firestore";
-
 import {
   Box,
   Button,
@@ -17,7 +13,6 @@ import {
 } from '@sproutsocial/racine';
 import { PhotoCapModal, /* FileAttach */ } from '../../components'
 
-import { useNavigate } from "react-router-dom";
 import { SelectableCountries } from "../../utilities/SelectableCountries";
 
 import defaultImage from '../../assets/picturePlaceHolder.png';
@@ -33,21 +28,18 @@ const itemsDisability = [{ value: '', text: 'Selecciona una discapacidad...' }, 
 const itemsIdType = [{ value: '', text: 'Selecciona un documento...' }, 'Documento/Cédula de Identidad', 'Acta/Partida de Nacimiento', 'Pasaporte', 'Constancia de Nacionalidad', 'Licencia de Manejo', 'INE', 'Matrícula consular'];
 const itemsInternationalProtection = [{ value: '', text: 'Selecciona un proceso...' }, 'No ha solicitado refugio', 'Es solicitante de refugio en Jalisco con acuse de recibo del trámite', 'Es solicitante de refugio en Jalisco con constancia de trámite', 'Abandonó el caso de refugio en otro estado', 'Tiene cosntancia de reconocimiento como sujeto de Protección Complementaria', 'Tiene constancia de reconocimiento como Refugiado', 'Realizó el trámite de refugio y la resolución de COMAR fue negativa (le negaron el refugio)', 'Es una persona apátrida',];
 const itemsInmProcess = [{ value: '', text: 'Selecciona un proceso...' }, 'Tarjeta de Visitante por Razones Humanitarias (TVRH)', 'Tarjeta de Residente Temporal (TRT)', 'Tarjeta de Residente Permanente (TRP)'];
-const itemsLegalCompanion = [{ value: '', text: 'Selecciona un proceso...' }, 'Papá', 'Mamá', 'Ambxs', 'Tutor legal'];
+const itemsLegalCompanion = [{ value: '', text: 'Selecciona un acompañante...' }, 'Papá', 'Mamá', 'Ambxs', 'Tutor legal'];
+const itemsNoLegalCompanion = [{ value: '', text: 'Selecciona un acompañante...' }, 'Hermanx', 'Primx', 'Tix', 'Amigx', 'Abuelx'];
 //socio demographic
-const itemsZoneType = [{ value: '', text: 'Selecciona tipo de comunidad...' }, 'Ciudad', 'Pueblo', 'Aldea'];
-const itemsReligions = [{ value: '', text: 'Selecciona tipo de comunidad...' }, 'Cátolica', 'Evangélica', 'Cristiana', 'Testigo de Jehová', 'Mormona', 'Anglicana', 'Protestante', 'Prebiteriana', 'Ateo', 'Otro'];
+// const itemsZoneType = [{ value: '', text: 'Selecciona tipo de comunidad...' }, 'Ciudad', 'Pueblo', 'Aldea'];
+// const itemsReligions = [{ value: '', text: 'Selecciona tipo de comunidad...' }, 'Cátolica', 'Evangélica', 'Cristiana', 'Testigo de Jehová', 'Mormona', 'Anglicana', 'Protestante', 'Prebiteriana', 'Ateo', 'Otro'];
 
 
-const QuickRegister = ({ state, updateField }) => {
-
-  const firestore = getFirestore(firebaseApp);
+const QuickRegister = ({ state, updateField, updateFile }) => {
   const [toogleUserImgModal, setToogleUserImgModal] = useState(0);
   const [toogleComarImgModal, setToogleComarImgModal] = useState(0);
   const [UserImgSrc, setUserImgSrc] = useState(defaultImage);
   const [isUnderAge, setIsUnderAge] = useState(false);
-
-  const navigate = useNavigate();
 
   const idDocumentRef = useRef(null);
   const comarDocumentRef = useRef(null);
@@ -59,6 +51,12 @@ const QuickRegister = ({ state, updateField }) => {
       return setIsUnderAge(false);
     setIsUnderAge(true);
   }, [state.birthDate]);
+
+  useEffect(() => {
+    if (!toogleUserImgModal)
+      return
+    updateFile('user-img', dataURItoFile(UserImgSrc))
+  }, [UserImgSrc]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const isChecked = (value, field) => value === state[field];
 
@@ -73,9 +71,17 @@ const QuickRegister = ({ state, updateField }) => {
     return legallAge <= age;
   }
 
-  const registerImmigrant = () => {
-    const docuRef = doc(firestore, `immigrants/${Date.now()}`);
-    setDoc(docuRef, { ...state });
+  const dataURItoFile = (dataURI) => {
+    let byteString = atob(dataURI.split(',')[1]);
+    let mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+    let ab = new ArrayBuffer(byteString.length);
+    let ia = new Uint8Array(ab);
+    for (var i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+    let blob = new Blob([ab], { type: mimeString });
+    return new File([blob], "immigrant-img");
+
   }
 
   return (<>
@@ -109,7 +115,7 @@ const QuickRegister = ({ state, updateField }) => {
           {props => <Input
             placeholder='Nombre o Nombres'
             value={state.name}
-            onChange={({ target }) => updateField('name', target.value)}
+            onChange={({ target }) => updateField('name', target.value, true)}
             {...props} />}
         </FormField>
       </Box>
@@ -119,7 +125,7 @@ const QuickRegister = ({ state, updateField }) => {
           {props => <Input
             placeholder='Apellido Paterno'
             value={state.fatherSurname}
-            onChange={({ target }) => updateField('fatherSurname', target.value)}
+            onChange={({ target }) => updateField('fatherSurname', target.value, true)}
             {...props} />}
         </FormField>
       </Box>
@@ -129,7 +135,7 @@ const QuickRegister = ({ state, updateField }) => {
           {props => <Input
             placeholder='Apellido Materno'
             value={state.motherSurname}
-            onChange={({ target }) => updateField('motherSurname', target.value)}
+            onChange={({ target }) => updateField('motherSurname', target.value, true)}
             {...props} />}
         </FormField>
       </Box>
@@ -139,7 +145,7 @@ const QuickRegister = ({ state, updateField }) => {
           {props => <Input
             placeholder='Como le gusta que le digan'
             value={state.unofficialName}
-            onChange={({ target }) => updateField('unofficialName', target.value)}
+            onChange={({ target }) => updateField('unofficialName', target.value, true)}
             {...props} />}
         </FormField>
       </Box>
@@ -384,9 +390,9 @@ const QuickRegister = ({ state, updateField }) => {
             {props => <>
               <Select
                 id='id-type'
-                value={state.IdType}
+                value={state.idType}
                 onChange={({ target }) => {
-                  updateField('IdType', target.value);
+                  updateField('idType', target.value);
                   idDocumentRef.current.click();
                 }}
                 {...props} >
@@ -396,7 +402,7 @@ const QuickRegister = ({ state, updateField }) => {
                   return <option key={`${id.value}-index`} value={id.value}>{id.text}</option>
                 })}
               </Select>
-              <input ref={idDocumentRef} type='file' multiple onChange={({ target }) => updateField('idDocument', target.value)} />
+              <input ref={idDocumentRef} type='file' multiple onChange={({ target }) => updateFile('idDocument', target.files[0])} />
             </>}
           </FormField>
         </Box> : null}
@@ -435,17 +441,17 @@ const QuickRegister = ({ state, updateField }) => {
           </FormField>
         </Box> : null}
 
-      {(state.internationalProtection && state.internationalProtection.toLowerCase() === 'si') ?
+      {/* {(state.internationalProtection && state.internationalProtection.toLowerCase() === 'si') ?
         <Box className="field-container" width={1 / 5} >
           <FormField label='Archivo del proceso COMAR'>
             {props => <>
               <Button appearance="placeholder" marginRight='1rem' onClick={() => comarDocumentRef.current.click()}>Archivo</Button>
               <Button appearance="primary" onClick={() => setToogleComarImgModal(toogleComarImgModal + 1)}>Tomar Foto</Button>
-              <input ref={comarDocumentRef} type='file' multiple onChange={({ target }) => updateField('comarDocument', target.value)} />
-              <PhotoCapModal id='comar-photo' setImg={(photo) => updateField('comarDocument', photo)} open={toogleComarImgModal} />
+              <input ref={comarDocumentRef} type='file' multiple onChange={({ target }) => updateFile('comarDocument', target.files[0])} />
+              <PhotoCapModal id='comar-photo' setImg={(photo) => updateFile('comarDocument', photo)} open={toogleComarImgModal} />
             </>}
           </FormField>
-        </Box> : null}
+        </Box> : null} */}
 
       <Box className="field-container" width={1 / 5} >
         <FormField label='Regularización migratoria'>
@@ -478,7 +484,7 @@ const QuickRegister = ({ state, updateField }) => {
                 return <option key={`${process.value}-index`} value={process.value}>{process.text}</option>
               })}
             </Select>
-              <input ref={inmDocumentRef} type='file' multiple onChange={({ target }) => updateField('inmDocument', target.value)} />
+              <input ref={inmDocumentRef} type='file' multiple onChange={({ target }) => updateFile('inmDocument', target.files[0])} />
             </>}
           </FormField>
         </Box> : null}
@@ -516,6 +522,39 @@ const QuickRegister = ({ state, updateField }) => {
             </FormField>
           </Box> : null}
 
+
+        <Box className="field-container" width={1 / 5} >
+          <FormField label='¿Menor tiene otro acompañante?'>
+            {props => itemsYesNo.map((value, index) => <Radio
+              key={`radio-${index}`}
+              className='margin-rigth-1'
+              name="has-no-legal-companion"
+              value={value}
+              label={value}
+              checked={isChecked(value, 'hasNoLegalCompanion')}
+              onChange={({ target }) => updateField('hasNoLegalCompanion', target.value)}
+              {...props} />)}
+          </FormField>
+
+        {(state.hasNoLegalCompanion && state.hasNoLegalCompanion.toLowerCase() === 'si') ?
+          <Box className="field-container" width={1 / 5} >
+            <FormField label='Acompañante Legal '>
+              {props => <Select
+                value={state.legalCompanion}
+                onChange={({ target }) => {
+                  updateField('legalCompanion', target.value);
+                }}
+                {...props} >
+                {itemsLegalCompanion.map(companion => {
+                  if (typeof companion === 'string')
+                    return <option key={`${companion}-index`} value={companion}>{companion}</option>
+                  return <option key={`${companion.value}-index`} value={companion.value}>{companion.text}</option>
+                })}
+              </Select>}
+            </FormField>
+          </Box> : null}
+        </Box>
+
       </> : null}
 
       <Box className="field-container" width={1 / 5} >
@@ -526,8 +565,8 @@ const QuickRegister = ({ state, updateField }) => {
             name="caregiver"
             value={value}
             label={value}
-            checked={isChecked(value, 'caregiver')}
-            onChange={({ target }) => updateField('caregiver', target.value)}
+            checked={isChecked(value, 'careGiver')}
+            onChange={({ target }) => updateField('careGiver', target.value)}
             {...props} />)}
         </FormField>
       </Box>
@@ -545,75 +584,7 @@ const QuickRegister = ({ state, updateField }) => {
         </FormField>
       </Box>
 
-
-
-
-
     </Box >
-
-    {/* <br /><br />
-    <h3>Datos Sociodemográficos</h3>
-    <br />
-    <Box className="quick-register" display='flex' flexWrap='wrap' >
-
-      <Box className="field-container" width={1 / 5} >
-        <FormField label='Tipo de zona de nacimiento'>
-          {props => <Select
-            value={state.bornInZoneType}
-            onChange={({ target }) => {
-              updateField('bornInZoneType', target.value);
-            }}
-            {...props} >
-            {itemsZoneType.map(zoneType => {
-              if (typeof zoneType === 'string')
-                return <option key={`${zoneType}-index`} value={zoneType}>{zoneType}</option>
-              return <option key={`${zoneType.value}-index`} value={zoneType.value}>{zoneType.text}</option>
-            })}
-          </Select>}
-        </FormField>
-      </Box>
-      <Box className="field-container" width={1 / 5} >
-        <FormField label='Religión'>
-          {props => <Select
-            value={state.religion}
-            onChange={({ target }) => updateField('religion', target.value)}
-            {...props} >
-            {itemsReligions.map(religion => {
-              if (typeof religion === 'string')
-                return <option key={`${religion}-index`} value={religion}>{religion}</option>
-              return <option key={`${religion.value}-index`} value={religion.value}>{religion.text}</option>
-            })}
-          </Select>}
-        </FormField>
-      </Box>
-
-      {(state.religion && state.religion.toLowerCase() === 'otro') ?
-        <Box className="field-container" width={1 / 5} >
-          <FormField label='Nombre de la religión'>
-            {props => <Input
-              placeholder='Nombre de la religión profesada'
-              value={state.otherReligion}
-              onChange={({ target }) => updateField('otherReligion', target.value)}
-              {...props} />}
-          </FormField>
-        </Box> : null}
-
-    </Box > */}
-
-
-    <Box className="quick-register" display='flex' flexWrap='wrap' flexDirection='row-reverse'>
-      <Box className="field-container" width={1 / 5}>
-        <Button width='100%' appearance="primary" onClick={registerImmigrant}>
-          Registrar
-        </Button>
-      </Box>
-      <Box className="field-container" width={1 / 5}>
-        <Button width='100%' appearance="destructive" onClick={() => navigate(`/`)}>
-          Cancelar
-        </Button>
-      </Box>
-    </Box>
-
 
     <PhotoCapModal id='user-photo' setImg={setUserImgSrc} open={toogleUserImgModal} />
   </>);

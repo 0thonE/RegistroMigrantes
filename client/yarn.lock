@@ -2030,10 +2030,10 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@sproutsocial/racine@11.0.1":
-  version "11.0.1"
-  resolved "https://registry.yarnpkg.com/@sproutsocial/racine/-/racine-11.0.1.tgz#87a46648a844017c3d1e19637b76e303255c1fa8"
-  integrity sha512-lJl1/489FgkVbAbmexGKUMYZf1xGVFIhptqTS4VfpICTNVjYp59y/7FGBjeRHSRYv9j4lLLqKvhNrlA2Yh4D6Q==
+"@sproutsocial/racine@11.2.5":
+  version "11.2.5"
+  resolved "https://registry.yarnpkg.com/@sproutsocial/racine/-/racine-11.2.5.tgz#51ded4d7e8475c441e783ddda83b3882eacc8965"
+  integrity sha512-YE4Y0kWh9mlWhQWdGPTvPmvwhBJxHFOghQtPEsPJ7TDTRR0445jWLVqObynvzZ2aCPrmUj5gtc0VXwaUgeVgtg==
   dependencies:
     "@styled-system/theme-get" "^5.1.2"
     classnames "^2.2.6"
@@ -8270,6 +8270,11 @@ react-error-overlay@^6.0.11:
   version "6.0.11"
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-6.0.11.tgz#92835de5841c5cf08ba00ddd2d677b6d17ff9adb"
   integrity sha512-/6UZ2qgEyH2aqzYZgQPxEnz33NJ2gNsnHA2o5+o4wW9bLM/JYQitNP9xPhsXwC08hMMovfGe/8retsdDsczPRg==
+
+react-firebase-hooks@^5.0.3:
+  version "5.0.3"
+  resolved "https://registry.yarnpkg.com/react-firebase-hooks/-/react-firebase-hooks-5.0.3.tgz#3125a382d6b72deee776fe1df9e0c8173cf36d5d"
+  integrity sha512-0+V2XwInZJNjW8B2cm+U21Hlv4xnp/1tJqIoDg2rjyWzKTQ9VoLPQ9PAt+fMqPumjLz5uCIREY7YqGSSjc439Q==
 
 react-focus-lock@^2.0.3:
   version "2.9.1"
