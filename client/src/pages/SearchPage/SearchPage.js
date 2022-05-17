@@ -81,6 +81,8 @@ const initialState = {
   searchResults: [],
 }
 
+
+
 const SearchPage = () => {
 
   const [state, dispatch] = useReducer(searchReducer, initialState);
@@ -135,6 +137,10 @@ const SearchPage = () => {
     });
 
     return dispatch({ type: 'search-success', results: [...docs] })
+  }
+
+  const downloadImmigrants = async () => {
+
   }
 
   return (
@@ -285,6 +291,14 @@ const SearchPage = () => {
               fullInfo={{ ...immigrant }}
             />
           </Box>))}
+      </Box>
+      <br /><br /><br />
+      <Box className="quick-register" display='flex' flexWrap='wrap' flexDirection='row-reverse'>
+        <Box className="field-container" width={1 / 5}>
+          <Button width='100%' appearance="placeholder" isLoading={state.isLoading} onClick={downloadImmigrants}>
+            Registrar
+          </Button>
+        </Box>
       </Box>
 
     </div>

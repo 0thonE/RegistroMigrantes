@@ -25,10 +25,8 @@ const itemsTransportation = [{ value: '', text: 'Selecciona un lugar...' }, 'Veh
 const itemsRouteReasons = [{ value: '', text: 'Selecciona un lugar...' }, 'Seguridad', 'Rapidez', 'Facilidad de trayecto', 'Siguiendo a grupo'];
 
 const FullRegister = ({ state, updateField, updateFile }) => {
-  const [showMore, setShowMore] = useState(true);
+  const [showMore, setShowMore] = useState(false);
   const [formalJob, setFormalJob] = useState('');
-
-
 
   const cvDocumentRef = useRef(null);
 
