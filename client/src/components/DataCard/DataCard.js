@@ -9,6 +9,7 @@ import {
 } from '@sproutsocial/racine';
 
 import defaultImage from '../../assets/defaultMigImage.png';
+import {useNavigate} from 'react-router-dom';
 
 let shelters = [
   {
@@ -41,12 +42,13 @@ const dateToText = (_date) => {
 const DataCard = ({ fullName = 'Nombre Apellido Apellido', birthDate = '00/00/0000', originCountry = 'País de origen',
   src_img = defaultImage, shelterEvents = shelters, ...props }) => {
 
+  const navigate = useNavigate();
 
   return (
     <div className="immigrant-dc-wrapper" >
       <Card
         className='immigrant-data-card'
-        onClick={() => alert('Show full info')}
+        onClick={() => navigate(`/migrante/${props.id}`)}
         ariaLabel="Migrant content card"
         display="flex"
         alignItems="center"

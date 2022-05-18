@@ -10,6 +10,7 @@ import { NavBar } from "./components";
 import LoginPage from "./pages/LoginPage";
 import SearchPage from "./pages/SearchPage";
 import RegisterPage from "./pages/RegisterPage";
+import PersonDataPage from "./pages/PersonDataPage";
 
 
 const App = (props) => {
@@ -22,6 +23,7 @@ const App = (props) => {
           <Routes>
           <Route path="/" element={<SearchPage />} />
           <Route path="/registro" element={<RegisterPage />} />
+          <Route path="/migrante/:id" element={<PersonDataPage />} />
           <Route path="/login" element={<LoginPage />} />º
           </Routes>
         </div>
