@@ -50,16 +50,28 @@
 
 }
 
-.loading-immigrants{
-    width:206px !important;
-    height:206px !important;
+.loading-immigrants {
+    width: 206px !important;
+    height: 206px !important;
     -webkit-transform: translateY(50%);
     transform: translateY(50%);
+
     &::after {
         border-width: 14px !important;
         width: 150px !important;
         height: 150px !important;
     }
+}
+
+.download-fab {
+    position: fixed;
+    right: 50%;
+    bottom: 1.5rem;
+    z-index: 100;
+    -webkit-transform: translateX(50%);
+    transform: translateX(50%);
+    width: calc($max-wrapper-width - 4rem);
+
 }
 
 // .search-page{

@@ -9,6 +9,7 @@ import {
   ListboxButton,
   Loader,
   Select,
+  Icon,
 } from '@sproutsocial/racine'
 import { DataCard } from '../../components';
 
@@ -22,7 +23,24 @@ import { getFirestore, collection, query as queryDoc, where, getDocs } from "fir
 const itemsCountries = SelectableCountries();
 const itemsGender = [{ value: '', text: 'Selecciona un género...' }, 'Hombre', 'Mujer', 'No binarix'];
 
+const arrayToCsv = (array, headers = ['Immigrant ID','Full Name' ], callingOrder = []) => {
+  const csvString = [
+    [...headers],
+    ...array.map(item => {
+      let lastNames = `${item.fatherSurname?.toUpperCase() || ''} ${item.motherSurname?.toUpperCase() || ''}`;
+      if (lastNames?.trim())
+        lastNames += ', ';
+      return [
+        `"${lastNames}${item.name?.toUpperCase()}"`,
+        item.id
+      ]
+    })
+  ]
+    .map(e => e.join(","))
+    .join("\n");
 
+  return csvString;
+}
 
 const searchReducer = (state, action) => {
   switch (action.type) {
@@ -114,7 +132,7 @@ const SearchPage = () => {
         //   break;
         // case 'motherSurname':
         //   queryConstraints.push(where(key, '==', value.toUpperCase()));
-          // break;
+        // break;
         case 'birthDate':
           if (value.value)
             queryConstraints.push(where(`${key}.value`, '==', value.value));
@@ -140,7 +158,22 @@ const SearchPage = () => {
   }
 
   const downloadImmigrants = async () => {
+    const docsSnap = await getDocs(collection(firestore, 'immigrants'))
 
+    let docus = []
+    docsSnap.forEach(docu => {
+      docus.push(docu.data());
+    });
+
+    let immigrantsCsv = arrayToCsv(docus);
+
+    console.log('immigrantsCsv', immigrantsCsv)
+    let link = document.createElement('a')
+    link.id = 'download-csv'
+    link.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(immigrantsCsv));
+    link.setAttribute('download', `Migrantes Registrados ${(new Date()).toLocaleDateString('es-Mx')?.replaceAll('/', '-')}.csv`);
+    document.body.appendChild(link)
+    document.querySelector('#download-csv').click()
   }
 
   return (
@@ -292,15 +325,13 @@ const SearchPage = () => {
             />
           </Box>))}
       </Box>
-      <br /><br /><br />
-      {/* <Box className="download-fab" display='flex' flexWrap='wrap' flexDirection='row-reverse'>
-        <Box className="field-container" width={1 / 5}>
-          <Button width='100%' appearance="placeholder"  onClick={downloadImmigrants}>
-            Descargar registros
-          </Button>
-        </Box>
-      </Box> */}
 
+      <br /><br /><br />
+      <Box className="download-fab" display='flex' flexWrap='wrap' flexDirection='row-reverse'>
+        <Button className="download-fab-button" appearance="placeholder" onClick={downloadImmigrants}>
+          Descargar registros
+        </Button>
+      </Box>
     </div>
   )
 };
