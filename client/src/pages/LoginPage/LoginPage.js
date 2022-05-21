@@ -1,24 +1,13 @@
-import React, { useState, useReducer } from 'react';
-
+import React, { useReducer } from 'react'
 import {
+  Alert,
   Button,
-  Input,
-  FormField,
-  Select,
-  Link
-} from '@sproutsocial/racine';
+  Card,
+  Container,
+  Form,
+} from 'react-bootstrap';
 
-import firebaseApp from "../../firebase/conection";
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  sendPasswordResetEmail,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
-
-import { getFirestore, doc, setDoc } from "firebase/firestore";
-
-const auth = getAuth(firebaseApp);
+import { useAuth } from '../../contexts/AuthContext';
 
 const loginReducer = (state, action) => {
   switch (action.type) {
@@ -28,171 +17,83 @@ const loginReducer = (state, action) => {
         [action.fieldName]: action.payload,
       };
     }
-    case 'login': {
+    case 'logging': {
       return {
         ...state,
+        loading: true,
         error: '',
-        isLoading: true,
-      };
+      }
     }
-    case 'success': {
+    case 'login-success': {
       return {
         ...state,
-        isLoggedIn: true,
-        isLoading: false,
-      };
+        loading: false,
+        error: '',
+      }
     }
-    case 'error': {
+    case 'login-error': {
       return {
         ...state,
-        error: 'Incorrect username or password!',
-        isLoggedIn: false,
-        isLoading: false,
-        username: '',
-        password: '',
-      };
+        laoding: false,
+        error: action.error
+      }
     }
-    case 'logOut': {
-      return {
-        ...state,
-        isLoggedIn: false,
-      };
-    }
+
     default:
-      return state;
+      return state
   }
-}
-
-
-const generateRandomPassword = () => {
-  let chars = "0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  let passwordLength = Math.floor(Math.random() * (18 - 12 + 1) + 12);
-  let password = '';
-
-  for (var i = 0; i <= passwordLength; i++) {
-    let randomNumber = Math.floor(Math.random() * chars.length);
-    password += chars.substring(randomNumber, randomNumber + 1);
-  }
-
-  return password;
 }
 
 const initialState = {
-  username: '',
+  email: '',
   password: '',
-  role: '',
-  org: '',
-  isLoading: false,
   error: '',
-  isLoggedIn: false,
-};
+  loading: false,
+}
 
 const LoginPage = () => {
-
   const [state, dispatch] = useReducer(loginReducer, initialState);
-  const firestore = getFirestore(firebaseApp);
-  const [isRegistering, setIsRegistering] = useState(false);
 
-  const registerUser = async (email, role, org) => {
-    let password = generateRandomPassword();
-    const infoUser = await createUserWithEmailAndPassword(
-      auth,
-      email,
-      password
-    ).then((usuarioFirebase) => {
-      return usuarioFirebase;
-    }).catch((error) => {
-      dispatch({ type: 'error' })
-    });
-
-    if (infoUser)
-      sendPasswordResetEmail(auth, email)
-        .then(() => {
-          dispatch({ type: 'emailSent' })
-        })
-        .catch((error) => {
-          dispatch({ type: 'error' })
-          // ..
-        });
-
-    console.log(infoUser.user.uid);
-    const docuRef = doc(firestore, `users/${infoUser.user.uid}`);
-    setDoc(docuRef, { email: email, org: org, role: role });
-  }
-
-  const submitHandler = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    dispatch({ type: 'logging' });
 
-    console.log("submit", state.email, state.password, state.role, 'FM4');
 
-    if (isRegistering) {
-      // registrar
-      registerUser(state.email, state.role, 'FM4');
-    } else {
-      // login
-      signInWithEmailAndPassword(auth, state.email, state.password,);
-    }
+
+
   }
 
   return (
-    <div className="login-wrapper">
-      <h3>{isRegistering ? "Registrando nuevo usuario" : "Inicia sesión"}</h3>
+    <Container
+      className="d-flex align-items-center justify-content-center"
+      style={{ minHeight: "100vh" }}>
 
-      <form onSubmit={submitHandler}>
-        <FormField
-          label='Correo'>
-          {props => <Input
-            placeholder={isRegistering ? 'Correo del nuevo usuario' : 'Ingrese su correo'}
-            type="email" id="email" error={isRegistering ? 'Ingrese correo valido' : 'Correo invalido'}
-            onChange={({ target }) => dispatch({
-              type: 'field',
-              fieldName: 'email',
-              payload: target.value,
-            })}
-            {...props} />}
-        </FormField>
-
-        {!isRegistering ?
-          <FormField
-            label='Contraseña'>
-            {props => <Input
-              type="password" id="password"
-              placeholder='Ingrese su contraseña'
-              error='Contraseña o correo invalido'
-              onChange={({ target }) => dispatch({
-                type: 'field',
-                fieldName: 'password',
-                payload: target.value,
-              })}
-              {...props} />}
-          </FormField> :
-          <FormField
-            label='Rol'>
-            {props => <Select
-              id='gender'
-              value={state.gender}
-              onChange={({ target }) => dispatch({
-                type: 'field',
-                fieldName: 'role',
-                payload: target.value,
-              })}
-              {...props} >
-              <option value="">Selecciona un rol...</option>
-              <option value="admin">Administrador</option>
-              <option value="analist">Analista</option>
-              <option value="volunteer">Voluntario</option>
-            </Select>}
-          </FormField>}
-
-        <Button className='login-button' appearance='primary' onClick={submitHandler}>
-          {isRegistering ? "Crear Usuario" : "Ingresar"}
-        </Button>
-
-      </form>
-
-      <Link className='login-link-actions' underline onClick={() => setIsRegistering(!isRegistering)}>{isRegistering ? "" : "Agregar Usuario"}</Link>
-    </div >
-  );
+      <div className="w-100" style={{ maxWidth: '400px' }}>
+        <Card>
+          <Card.Body>
+            <h2 className="text-center mb-4">Inicia Sesión</h2>
+            {state.error && <Alert variant="danger">{state.error}</Alert>}
+            <Form onSubmit={handleSubmit}>
+              <Form.Group id="email">
+                <Form.Label>Correo</Form.Label>
+                <Form.Control type="email" required value={state.email} placeholder='email'
+                  onChange={({ target }) => dispatch({ type: 'field', fieldName: 'email', payload: target.value })} />
+              </Form.Group><br />
+              <Form.Group id="password">
+                <Form.Label>Contraseña</Form.Label>
+                <Form.Control type="password" required value={state.password} placeholder='constraseña'
+                  onChange={({ target }) => dispatch({ type: 'field', fieldName: 'password', payload: target.value })} />
+              </Form.Group><br />
+              <Button className='w-100' type="submit" disabled={state.loading} >Inicir sesión</Button>
+            </Form>
+          </Card.Body >
+        </Card >
+        {/* <div className="w-100 text-center mt-2">
+          Already have an account?Log In
+        </div> */}
+      </div >
+    </Container>
+  )
 }
 
-export default LoginPage;
+export default LoginPage

@@ -2,6 +2,7 @@ import React from 'react'
 import './App.scss';
 import { Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from '@sproutsocial/racine';
+import { AuthProvider } from './contexts/AuthContext'
 
 // Components
 import { NavBar } from "./components";
@@ -18,15 +19,17 @@ const App = (props) => {
 
     <ThemeProvider>
       <div className="App">
-        <NavBar />
-        <div className="wrapper">
-          <Routes>
-          <Route path="/" element={<SearchPage />} />
-          <Route path="/registro" element={<RegisterPage />} />
-          <Route path="/migrante/:id" element={<PersonDataPage />} />
-          <Route path="/login" element={<LoginPage />} />º
-          </Routes>
-        </div>
+        <AuthProvider>
+          <NavBar />
+          <div className="wrapper">
+            <Routes>
+              <Route path="/" element={<SearchPage />} />
+              <Route path="/registro" element={<RegisterPage />} />
+              <Route path="/migrante/:id" element={<PersonDataPage />} />
+              <Route path="/login" element={<LoginPage />} />º
+            </Routes>
+          </div>
+        </AuthProvider>
       </div>
     </ThemeProvider>
   )
