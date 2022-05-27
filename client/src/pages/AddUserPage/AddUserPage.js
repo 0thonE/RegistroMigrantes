@@ -8,6 +8,7 @@ import {
   Spinner,
 } from 'react-bootstrap';
 
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 
 const roles = [{ value: '', text: 'Selecciona un rol...' }, 'Admin', 'Analista', 'Voluntario'];
@@ -59,22 +60,34 @@ const loginReducer = (state, action) => {
 
 const initialState = {
   email: '',
-  password: '',
+  role: '',
   error: '',
   isLoading: false,
 }
 
 const AddUserPage = () => {
   const [state, dispatch] = useReducer(loginReducer, initialState);
+  const { addUser } = useAuth();
+  const navigate = useNavigate();
   let org = 'FM4'
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     dispatch({ type: 'adding-user' });
-    // setTimeout(() => {
-    //   // dispatch({ type: 'add-user-error', error: 'No se pudo crear un usuario' });
-    //   dispatch({ type: 'add-user-success' });
-    // }, 3000);
+    addUser(state.email, state.role)
+      .then(() => {
+        dispatch({ type: 'add-user-success' });
+        setTimeout(() => {
+          navigate('/users')
+        }, 4000);
+      })
+      .catch((err) => {
+        let messageError = 'No se pudo crear usuario'
+        if (err instanceof Error && err.message?.includes('email-already-in-use'))
+          messageError += `, ya existe el usuario ${state.email}`
+        dispatch({ type: 'add-user-error', error: messageError });
+      })
 
   }
 

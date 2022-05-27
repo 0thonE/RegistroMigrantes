@@ -1,13 +1,13 @@
 import React, { createContext, useContext, useEffect, useReducer } from 'react';
 import firebaseApp from "../firebase/conection"
 
-import { getFirestore, doc,/*  collection, setDoc, */ getDoc } from "firebase/firestore";
+import { getFirestore, doc, /* collection,  */setDoc, getDoc } from "firebase/firestore";
 import {
   getAuth,
   onAuthStateChanged,
-  // createUserWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
-  // sendPasswordResetEmail,
   // signOut,
 } from "firebase/auth";
 
@@ -40,7 +40,7 @@ const authReducer = (state, action) => {
 const initialState = {
   user: '',
   role: '',
-  org: '',
+  org: 'FM4',
   isLoading: true,
 }
 
@@ -60,14 +60,51 @@ const generateRandomPassword = () => {
 const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState)
 
-  const addUser = (email, role) => {
+  const addUser = async (email, role) => {
 
     let randomPassword = generateRandomPassword();
 
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
+      let successfullSteps = {}
+      try {
+        const infoUser = await createUserWithEmailAndPassword(auth, email, randomPassword);
+        successfullSteps['add-email'] = true;
+        if (infoUser)
+          sendPasswordResetEmail(auth, email);
+        successfullSteps['send-password-reset'] = true;
+        const docuRef = await doc(firestore, `users/${infoUser.user.uid}`);
+        await setDoc(docuRef, { email: email, org: state.org, role: role })
+        successfullSteps['add-user'] = true;
+        resolve({ email, uid: infoUser.user.uid })
 
+      } catch (error) {
+        /* TODO: erease email added if already created*/
+        reject(error)
+      }
     })
+  }
+  const getUsers = async (email, role) => {
 
+    let randomPassword = generateRandomPassword();
+
+    return new Promise(async (resolve, reject) => {
+      let successfullSteps = {}
+      try {
+        const infoUser = await createUserWithEmailAndPassword(auth, email, randomPassword);
+        successfullSteps['add-email'] = true;
+        if (infoUser)
+          sendPasswordResetEmail(auth, email);
+        successfullSteps['send-password-reset'] = true;
+        const docuRef = await doc(firestore, `users/${infoUser.user.uid}`);
+        await setDoc(docuRef, { email: email, org: state.org, role: role })
+        successfullSteps['add-user'] = true;
+        resolve({ email, uid: infoUser.user.uid })
+
+      } catch (error) {
+        /* TODO: erease email added if already created*/
+        reject(error)
+      }
+    })
   }
 
   const useLogin = (email, password) => {
@@ -84,6 +121,7 @@ const AuthProvider = ({ children }) => {
 
 
   useEffect(() => {
+    if (true !== 0) return
 
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (!user) return;

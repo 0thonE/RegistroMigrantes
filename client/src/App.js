@@ -13,6 +13,7 @@ import SearchPage from "./pages/SearchPage";
 import RegisterPage from "./pages/RegisterPage";
 import PersonDataPage from "./pages/PersonDataPage";
 import AddUserPage from "./pages/AddUserPage";
+import UsersPage from "./pages/UsersPage";
 
 
 const App = (props) => {
@@ -24,12 +25,12 @@ const App = (props) => {
           <NavBar />
           <div className="wrapper">
             <Routes>
-              <Route path="/" element={<SearchPage />} />
-              <Route path="/registro" element={<RegisterPage />} />
-              <Route path="/migrante/:id" element={<PersonDataPage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/users/add" element={<AddUserPage />} />
-              <Route path="/users" element={<LoginPage />} />
+              <Route exact path="/" element={<SearchPage />} />
+              <Route exact path="/registro" element={<RegisterPage />} />
+              <Route exact path="/migrante/:id" element={<PersonDataPage />} />
+              <Route exact path="/login" element={<LoginPage />} />
+              <Route exact path="/users/add" element={<AddUserPage />} />
+              <Route exact path="/users" element={<UsersPage />} />
             </Routes>
           </div>
         </AuthProvider>
