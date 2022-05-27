@@ -60,7 +60,7 @@ const generateRandomPassword = () => {
 const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState)
 
-  const registerUser = (email, role) => {
+  const addUser = (email, role) => {
 
     let randomPassword = generateRandomPassword();
 
@@ -77,7 +77,7 @@ const AuthProvider = ({ children }) => {
   const getValues = () => {
     return {
       ...state,
-      registerUser,
+      addUser,
       useLogin,
     }
   }

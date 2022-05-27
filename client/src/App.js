@@ -12,6 +12,7 @@ import LoginPage from "./pages/LoginPage";
 import SearchPage from "./pages/SearchPage";
 import RegisterPage from "./pages/RegisterPage";
 import PersonDataPage from "./pages/PersonDataPage";
+import AddUserPage from "./pages/AddUserPage";
 
 
 const App = (props) => {
@@ -26,7 +27,9 @@ const App = (props) => {
               <Route path="/" element={<SearchPage />} />
               <Route path="/registro" element={<RegisterPage />} />
               <Route path="/migrante/:id" element={<PersonDataPage />} />
-              <Route path="/login" element={<LoginPage />} />º
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/users/add" element={<AddUserPage />} />
+              <Route path="/users" element={<LoginPage />} />
             </Routes>
           </div>
         </AuthProvider>
