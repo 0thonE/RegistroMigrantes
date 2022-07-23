@@ -1,35 +1,26 @@
-import React from 'react'
-import './App.scss';
-import { Routes, Route } from 'react-router-dom';
-import { ThemeProvider } from '@sproutsocial/racine';
+import React from 'react';
+import logo from './logo.svg';
+import './App.css';
 
-// Components
-import { NavBar } from "./components";
-
-// Pages
-import LoginPage from "./pages/LoginPage";
-import SearchPage from "./pages/SearchPage";
-import RegisterPage from "./pages/RegisterPage";
-import PersonDataPage from "./pages/PersonDataPage";
-
-
-const App = (props) => {
+function App() {
   return (
-
-    <ThemeProvider>
-      <div className="App">
-        <NavBar />
-        <div className="wrapper">
-          <Routes>
-          <Route path="/" element={<SearchPage />} />
-          <Route path="/registro" element={<RegisterPage />} />
-          <Route path="/migrante/:id" element={<PersonDataPage />} />
-          <Route path="/login" element={<LoginPage />} />º
-          </Routes>
-        </div>
-      </div>
-    </ThemeProvider>
-  )
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <p>
+          Edit <code>src/App.js</code> and save to reload.
+        </p>
+        <a
+          className="App-link"
+          href="https://reactjs.org"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Learn React
+        </a>
+      </header>
+    </div>
+  );
 }
 
-export default App
+export default App;
