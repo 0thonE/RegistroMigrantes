@@ -1,0 +1,19 @@
+.login-page {
+
+  height: 100%;
+  width: 100%;
+  background-image: linear-gradient(to right bottom,
+      #0055b8, #2c64c1, #4474ca, #5883d3,
+      #6c93dc, #6595d8, #6197d3, #5f99cd,
+      #458db8, #2e80a1, #1b738b, #0b6575);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .login-card{
+    height: 20rem;
+    width: 20rem;
+    background-color: white;
+
+  }
+}

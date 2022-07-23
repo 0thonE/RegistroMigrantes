@@ -1,14 +1,24 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.scss';
 import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
 
+
+import { BrowserRouter as Router } from 'react-router-dom';
+import { FullPageLoading } from 'components';
+
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <Router>
+
+      <Suspense fallback={<FullPageLoading />}>
+        <App />
+      </Suspense>
+    </Router>
   </React.StrictMode>
 );
 
